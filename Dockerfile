@@ -1,26 +1,61 @@
-# Etapa 1: Build
-FROM node:20-alpine AS builder
+pipeline {
+    agent any
 
-WORKDIR /app
+    tools {
+        nodejs('Node22')
+    }
 
-# Copiamos archivos necesarios
-COPY package*.json ./
-COPY . .
+    stages {
+        stage('Clonar repositorio') {
+            steps {
+                checkout scm
+            }
+        }
 
-# Instalamos dependencias y construimos
-RUN npm install
-RUN npm run build
+        stage('Instalar dependencias') {
+            steps {
+                sh 'npm install'
+            }
+        }
 
-# Etapa 2: Producción
-FROM node:20-alpine
+        stage('Instalar dependencias del sistema para Playwright') {
+            steps {
+                sh '''
+                apt-get update
+                apt-get install -y libglib2.0-0 \\
+                    libnss3 \\
+                    libnspr4 \\
+                    libdbus-1-3 \\
+                    libatk1.0-0 \\
+                    libatk-bridge2.0-0 \\
+                    libcups2 \\
+                    libxcb1 \\
+                    libxkbcommon0 \\
+                    libatspi2.0-0 \\
+                    libx11-6 \\
+                    libxcomposite1 \\
+                    libxdamage1 \\
+                    libxext6 \\
+                    libxfixes3 \\
+                    libxrandr2 \\
+                    libgbm1 \\
+                    libpango-1.0-0 \\
+                    libcairo2 \\
+                    libasound2
+                '''
+            }
+        }
 
-WORKDIR /app
+        stage('Instalar navegadores Playwright') {
+            steps {
+                sh 'npx playwright install'
+            }
+        }
 
-# Copiamos solo el resultado del build
-COPY --from=builder /app/build ./build
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/.svelte-kit /app/.svelte-kit
-COPY --from=builder /app/node_modules /app/node_modules
-
-# Comando de inicio
-CMD ["node", "./build"]
+        stage('Ejecutar tests') {
+            steps {
+                sh 'npm run test'
+            }
+        }
+    }
+}
