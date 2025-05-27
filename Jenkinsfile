@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'node:20-bullseye' // Imagen con dependencias básicas
+            args '--privileged' // Necesario para algunas dependencias de Playwright
+        }
+    }
 
     tools {
         nodejs('Node22')
