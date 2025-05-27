@@ -18,6 +18,12 @@ pipeline {
             }
         }
 
+        stage('Instalar navegadores Playwright') {
+            steps {
+                sh 'npx playwright install'
+            }
+        }
+
         stage('Ejecutar tests') {
             steps {
                 sh 'npm run test'
