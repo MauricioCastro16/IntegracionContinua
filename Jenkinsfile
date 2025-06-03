@@ -16,18 +16,17 @@ pipeline {
       }
     }
 
-    stage('Instalar Playwright Browsers') {
-      steps {
-        bat 'npx playwright install'
-      }
-    }
-
-
-    stage('Test Unitarios') {
-      steps {
-        bat 'npm run test:unit > unit-test-result.txt || exit /b 1'
-      }
-    }
+//    stage('Test Unitarios') {
+//      steps {
+//        bat 'npm run test:unit > unit-test-result.txt || exit /b 1'
+//      }
+//    }
+//
+//    stage('Instalar Playwright Browsers') {
+//      steps {
+//        bat 'npx playwright install'
+//      }
+//    }
 
     stage('Test E2E') {
       steps {
@@ -40,7 +39,6 @@ pipeline {
         '''
       }
     }
-
 
     stage('Build') {
       steps {

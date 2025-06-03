@@ -12,6 +12,11 @@ const auth = {
   password: process.env.JIRA_API_TOKEN
 };
 
+const client = axios.create({
+  baseURL: 'https://integracioncontinua.atlassian.net/rest/api/3',
+  auth
+});
+
 const git = simpleGit();
 
 const getIssueKeyFromCommit = (msg) => {
