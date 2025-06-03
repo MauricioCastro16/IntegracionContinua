@@ -69,7 +69,9 @@ pipeline {
 
     stage('Actualizar Jira') {
       steps {
-        bat 'npm run jira:update'
+        withCredentials([usernamePassword(credentialsId: 'jira-credentials', usernameVariable: 'JIRA_USER', passwordVariable: 'JIRA_TOKEN')]) {
+          bat 'npm run jira:update'
+        }
       }
     }
   }

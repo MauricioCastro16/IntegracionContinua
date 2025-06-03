@@ -2,15 +2,14 @@ import axios from 'axios';
 import simpleGit from 'simple-git';
 import dotenv from 'dotenv';
 dotenv.config();
+import 'dotenv/config';
+
 
 const JIRA_DOMAIN = 'integracioncontinua.atlassian.net';
-const JIRA_EMAIL = 'redirir@gmail.com';
-const JIRA_TOKEN = process.env.JIRA_API_TOKEN; // ⚠️ reemplazalo
-const JIRA_BOARD_ID = 1;
 
 const auth = {
-  username: JIRA_EMAIL,
-  password: JIRA_TOKEN,
+  username: process.env.JIRA_EMAIL,
+  password: process.env.JIRA_API_TOKEN
 };
 
 const git = simpleGit();

@@ -15,15 +15,12 @@
     "test:e2e": "npx playwright test",
     "format": "npx prettier --write .",
     "lint": "npx prettier --check . && npx eslint .",
-
     "docker:build": "docker build -t sveltekit-app:latest .",
     "docker:run": "docker run -p 3000:3000 --name sveltekit-app-container sveltekit-app:latest",
     "docker:stop": "docker stop sveltekit-app-container || true",
     "docker:rm": "docker rm sveltekit-app-container || true",
     "docker:rebNrun": "npm run docker:stop && npm run docker:rm && npm run docker:build && npm run docker:run",
-
     "ngrok:run": "ngrok http --domain=boxer-calm-molly.ngrok-free.app 8080",
-
     "open:github": "open-cli https://github.com/MauricioCastro16/IntegracionContinua",
     "open:jenkins": "start /B ngrok http --domain=boxer-calm-molly.ngrok-free.app 8080 && timeout 5 && open-cli http://boxer-calm-molly.ngrok-free.app",
     "open:render": "open-cli https://dashboard.render.com/web/srv-d0v310a4d50c73e49s10",
@@ -31,7 +28,6 @@
     "open:docker": "powershell -Command \"Start-Process 'C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe'\"",
     "open:apps": "start \"\" \"C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe\" && start \"\" \"C:\\Users\\castr\\AppData\\Local\\GitHubDesktop\\GitHubDesktop.exe\"",
     "open": "npm run open:apps && npm run open:github && npm run open:jenkins && npm run open:render && npm run open:slack",
-
     "jira:update": "node scripts\\update-jira.js"
   },
   "devDependencies": {
