@@ -31,9 +31,16 @@ pipeline {
 
     stage('Test E2E') {
       steps {
-        bat 'npm run test:e2e > e2e-test-result.txt 2>&1 || type e2e-test-result.txt & exit /b 1'
+        bat '''
+          npm run test:e2e > e2e-test-result.txt 2>&1
+          if %errorlevel% neq 0 (
+            type e2e-test-result.txt
+            exit /b 1
+          )
+        '''
       }
     }
+
 
     stage('Build') {
       steps {
