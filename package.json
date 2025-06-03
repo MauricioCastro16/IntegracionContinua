@@ -15,7 +15,7 @@
     "test:e2e": "npx playwright test",
     "format": "npx prettier --write .",
     "lint": "npx prettier --check . && npx eslint .",
-    
+
     "docker:build": "docker build -t sveltekit-app:latest .",
     "docker:run": "docker run -p 3000:3000 --name sveltekit-app-container sveltekit-app:latest",
     "docker:stop": "docker stop sveltekit-app-container || true",
@@ -32,7 +32,7 @@
     "open:apps": "start \"\" \"C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe\" && start \"\" \"C:\\Users\\castr\\AppData\\Local\\GitHubDesktop\\GitHubDesktop.exe\"",
     "open": "npm run open:apps && npm run open:github && npm run open:jenkins && npm run open:render && npm run open:slack",
 
-    "jira:update": "node update-jira.js"
+    "jira:update": "node scripts\\update-jira.js"
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.5",
