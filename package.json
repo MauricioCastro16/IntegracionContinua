@@ -19,7 +19,8 @@
     "docker-run": "docker run -p 3000:3000 --name sveltekit-app-container sveltekit-app:latest",
     "docker-stop": "docker stop sveltekit-app-container || true",
     "docker-rm": "docker rm sveltekit-app-container || true",
-    "docker-rebNrun": "npm run docker-stop && npm run docker-rm && npm run docker-build && npm run docker-run"
+    "docker-rebNrun": "npm run docker-stop && npm run docker-rm && npm run docker-build && npm run docker-run",
+    "ngrok-run": "ngrok http --domain=boxer-calm-molly.ngrok-free.app 8080"
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.5",
