@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "npx vite dev",
-    "build": "npx vite build",
+	"build": "chmod +x node_modules/.bin/* && npx vite build",
     "preview": "npx vite preview",
-    "prepare": "npx svelte-kit sync || echo ''",
+	"prepare": "chmod +x node_modules/.bin/* && npx svelte-kit sync || echo ''",
     "check": "npx svelte-kit sync && npx svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "npx svelte-kit sync && npx svelte-check --tsconfig ./tsconfig.json --watch",
     "test:unit": "npx vitest",
