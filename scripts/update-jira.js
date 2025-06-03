@@ -2,13 +2,11 @@ import axios from 'axios';
 import simpleGit from 'simple-git';
 import dotenv from 'dotenv';
 dotenv.config();
-import 'dotenv/config';
-
 
 const JIRA_DOMAIN = 'integracioncontinua.atlassian.net';
 
 const client = axios.create({
-  baseURL: 'https://integracioncontinua.atlassian.net/rest/api/3',
+  baseURL: `https://${JIRA_DOMAIN}/rest/api/3`,
   auth: {
     username: process.env.JIRA_USER,
     password: process.env.JIRA_TOKEN
@@ -22,7 +20,7 @@ const getIssueKeyFromCommit = (msg) => {
   return match ? match[0] : null;
 };
 
-const commitIncludesDone = (msg) => msg.includes('#done');
+const commitIncludesDone = (msg) => msg.toLowerCase().includes('#done');
 
 const getIssueStatus = async (issueKey) => {
   const res = await client.get(`/issue/${issueKey}`);
@@ -36,7 +34,9 @@ const getTransitions = async (issueKey) => {
 
 const transitionIssue = async (issueKey, transitionName) => {
   const transitions = await getTransitions(issueKey);
-  const transition = transitions.find((t) => t.name.toLowerCase() === transitionName.toLowerCase());
+  const transition = transitions.find((t) =>
+    t.name.toLowerCase() === transitionName.toLowerCase()
+  );
 
   if (!transition) {
     console.error(`❌ Transición "${transitionName}" no encontrada`);
@@ -44,8 +44,9 @@ const transitionIssue = async (issueKey, transitionName) => {
   }
 
   await client.post(`/issue/${issueKey}/transitions`, {
-    transition: { id: transition.id },
+    transition: { id: transition.id }
   });
+
   console.log(`✅ ${issueKey} movida a "${transitionName}"`);
 };
 
@@ -62,10 +63,10 @@ const run = async () => {
   const status = await getIssueStatus(issueKey);
   const isDone = commitIncludesDone(msg);
 
-  if (isDone && status !== 'Done') {
-    await transitionIssue(issueKey, 'Done');
-  } else if (!isDone && status === 'To Do') {
-    await transitionIssue(issueKey, 'Doing');
+  if (isDone && status !== 'Hecho') {
+    await transitionIssue(issueKey, 'Hecho');
+  } else if (!isDone && status === 'Tareas por hacer') {
+    await transitionIssue(issueKey, 'En curso');
   } else {
     console.log(`ℹ️ No se requiere transición. Estado actual: ${status}`);
   }
