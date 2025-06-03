@@ -25,12 +25,12 @@ const getIssueKeyFromCommit = (msg) => {
 const commitIncludesDone = (msg) => msg.includes('#done');
 
 const getIssueStatus = async (issueKey) => {
-  const res = await axios.get(`https://${JIRA_DOMAIN}/rest/api/3/issue/${issueKey}`, { auth });
+  const res = await client.get(`/issue/${issueKey}`);
   return res.data.fields.status.name;
 };
 
 const getTransitions = async (issueKey) => {
-  const res = await axios.get(`https://${JIRA_DOMAIN}/rest/api/3/issue/${issueKey}/transitions`, { auth });
+  const res = await client.get(`/issue/${issueKey}/transitions`);
   return res.data.transitions;
 };
 
@@ -43,10 +43,9 @@ const transitionIssue = async (issueKey, transitionName) => {
     return;
   }
 
-  await axios.post(`https://${JIRA_DOMAIN}/rest/api/3/issue/${issueKey}/transitions`, {
+  await client.post(`/issue/${issueKey}/transitions`, {
     transition: { id: transition.id },
-  }, { auth });
-
+  });
   console.log(`✅ ${issueKey} movida a "${transitionName}"`);
 };
 
