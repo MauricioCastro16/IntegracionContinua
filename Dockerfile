@@ -18,6 +18,8 @@ COPY . .
 
 # Construimos la aplicación SvelteKit
 # Asegúrate de que tu script "build" en package.json sea `vite build`
+# Ejecutar el sync explícitamente antes del build
+RUN npx svelte-kit sync
 RUN npm run build
 
 # Stage 2: Create the production-ready image

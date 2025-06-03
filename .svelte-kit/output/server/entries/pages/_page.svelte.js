@@ -1,6 +1,6 @@
 import "clsx";
 function _page($$payload) {
-  $$payload.out += `<h1>Welcome to SvelteKit</h1> <p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>`;
+  $$payload.out += `<h1>Bienvenido a la aplicación de Mauricio</h1> <p>Github: <a href="https://github.com/MauricioCastro16/IntegracionContinua">página de github</a></p>`;
 }
 export {
   _page as default
