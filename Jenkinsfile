@@ -16,6 +16,13 @@ pipeline {
       }
     }
 
+    stage('Instalar Playwright Browsers') {
+      steps {
+        bat 'npx playwright install'
+      }
+    }
+
+
     stage('Test Unitarios') {
       steps {
         bat 'npm run test:unit > unit-test-result.txt || exit /b 1'
@@ -45,6 +52,12 @@ pipeline {
             )
             '''
         }
+    }
+
+    stage('Publicar artefactos') {
+      steps {
+        archiveArtifacts artifacts: '*.txt', fingerprint: true
+      }
     }
   }
   post {
