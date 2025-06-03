@@ -1,10 +1,8 @@
 pipeline {
   agent any
   tools {
-    nodejs 'Node 20'
+      nodejs 'Node 20'
     }
-
-
   stages {
     stage('Checkout') {
       steps {
@@ -15,6 +13,18 @@ pipeline {
     stage('Instalar dependencias') {
       steps {
         bat 'npm install'
+      }
+    }
+
+    stage('Test Unitarios') {
+      steps {
+        bat 'npm run test:unit > unit-test-result.txt || exit /b 1'
+      }
+    }
+
+    stage('Test E2E') {
+      steps {
+        bat 'npm run test:e2e > e2e-test-result.txt || exit /b 1'
       }
     }
 
@@ -37,4 +47,24 @@ pipeline {
         }
     }
   }
+  post {
+    always {
+      script {
+        def unitResult = readFile('unit-test-result.txt').trim()
+        def e2eResult = readFile('e2e-test-result.txt').trim()
+
+        def summary = "✅ *Build Finalizado* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`\n" +
+                      "📦 *Tests Unitarios:* \n```\n${unitResult.take(300)}\n```\n" +
+                      "🎭 *Tests E2E:* \n```\n${e2eResult.take(300)}\n```\n" +
+                      "🔗 ${env.BUILD_URL}"
+
+        slackSend(channel: '#pruebas-unitarias', message: summary)
+      }
+    }
+
+    failure {
+      slackSend(channel: '#pruebas-unitarias', message: "❌ *Build fallido* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`\n🔗 ${env.BUILD_URL}")
+    }
+  }
+
 }
