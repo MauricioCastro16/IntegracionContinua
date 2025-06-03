@@ -67,11 +67,15 @@ pipeline {
 
     stage('Actualizar Jira') {
       steps {
-        withCredentials([usernamePassword(credentialsId: 'jira-credentials', usernameVariable: 'JIRA_USER', passwordVariable: 'JIRA_TOKEN')]) {
+        withCredentials([
+          usernamePassword(credentialsId: 'jira-credentials', usernameVariable: 'JIRA_USER', passwordVariable: 'JIRA_TOKEN')
+        ]) {
+          bat 'echo JIRA_USER=%JIRA_USER% && echo JIRA_TOKEN=%JIRA_TOKEN%'
           bat 'npm run jira:update'
         }
       }
     }
+
   }
   post {
     always {

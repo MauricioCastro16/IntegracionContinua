@@ -7,14 +7,12 @@ import 'dotenv/config';
 
 const JIRA_DOMAIN = 'integracioncontinua.atlassian.net';
 
-const auth = {
-  username: process.env.JIRA_EMAIL,
-  password: process.env.JIRA_API_TOKEN
-};
-
 const client = axios.create({
   baseURL: 'https://integracioncontinua.atlassian.net/rest/api/3',
-  auth
+  auth: {
+    username: process.env.JIRA_USER,
+    password: process.env.JIRA_TOKEN
+  }
 });
 
 const git = simpleGit();
