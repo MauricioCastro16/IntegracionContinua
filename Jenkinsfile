@@ -66,6 +66,12 @@ pipeline {
         archiveArtifacts artifacts: '*.txt', fingerprint: true
       }
     }
+
+    stage('Actualizar Jira') {
+      steps {
+        bat 'npm run jira:update'
+      }
+    }
   }
   post {
     always {
