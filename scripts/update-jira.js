@@ -63,9 +63,9 @@ const run = async () => {
   const status = await getIssueStatus(issueKey);
   const isDone = commitIncludesDone(msg);
 
-  if (isDone && status !== 'Hecho') {
-    await transitionIssue(issueKey, 'Hecho');
-  } else if (!isDone && status === 'Tareas por hacer') {
+  if (isDone && status !== 'Listo') {
+    await transitionIssue(issueKey, 'Listo');
+  } else if (!isDone && status === 'Por hacer') {
     await transitionIssue(issueKey, 'En curso');
   } else {
     console.log(`ℹ️ No se requiere transición. Estado actual: ${status}`);
