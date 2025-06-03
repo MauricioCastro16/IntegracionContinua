@@ -22,3 +22,62 @@ Thumbs.db
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# node
+node_modules/
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json # opcional, si usás lockfiles por entorno
+
+# SvelteKit & Vite
+.svelte-kit/
+.vite/
+
+# TypeScript
+*.tsbuildinfo
+
+# Build
+dist/
+build/
+*.local
+
+# Logs
+*.log
+logs/
+*.pid
+*.seed
+*.pid.lock
+
+# Playwright
+test-results/
+playwright-report/
+
+# Coverage
+coverage/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# VSCode/IDE
+.vscode/
+.idea/
+*.sw?
+
+# Docker
+*.tar
+docker-compose.override.yml
+docker/.env
+
+# Jenkins
+*.jenkins
+*.jenkinsfile
+
+# Ngrok
+.ngrok*
+ngrok-debug.log
+
+# Otros
+*.tgz
