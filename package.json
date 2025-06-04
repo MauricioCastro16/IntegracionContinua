@@ -27,7 +27,8 @@
     "open:slack": "open-cli https://feedbackpruebasic.slack.com",
     "open:docker": "powershell -Command \"Start-Process 'C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe'\"",
     "open:apps": "start \"\" \"C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe\" && start \"\" \"C:\\Users\\castr\\AppData\\Local\\GitHubDesktop\\GitHubDesktop.exe\"",
-    "open": "npm run open:apps && npm run open:github && npm run open:jenkins && npm run open:render && npm run open:slack",
+    "open:jira": "open-cli https://integracioncontinua.atlassian.net/jira/software/projects/SCRUM/boards/1?sprintStarted=true",
+    "open": "npm run open:apps && npm run open:github && npm run open:jenkins && npm run open:render && npm run open:slack && npm run open:jira",
     "jira:update": "node scripts\\update-jira.js"
   },
   "devDependencies": {
