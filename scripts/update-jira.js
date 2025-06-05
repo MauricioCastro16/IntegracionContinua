@@ -51,9 +51,24 @@ const transitionIssue = async (issueKey, transitionName) => {
 };
 
 const run = async () => {
-  // Obtené todos los commits no pusheados (o si estás en Jenkins: entre el último push y HEAD)
-  const log = await git.log();
-  const commits = log.all;
+  const from = process.env.GIT_PREVIOUS_COMMIT;
+  const to = process.env.GIT_COMMIT;
+
+  let commits = [];
+
+  if (from && to) {
+    try {
+      const log = await git.log({ from, to });
+      commits = log.all;
+    } catch (e) {
+      console.warn('⚠️ Error obteniendo commits entre GIT_PREVIOUS_COMMIT y GIT_COMMIT, usando el último commit');
+    }
+  }
+
+  if (commits.length === 0) {
+    const log = await git.log({ maxCount: 1 });
+    commits = [log.latest];
+  }
 
   const processed = new Set();
 
