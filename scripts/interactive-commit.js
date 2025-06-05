@@ -82,7 +82,13 @@ const run = async () => {
       message: 'Seleccioná la tarjeta relacionada:',
       choices: issueChoices
     },
-    { type: 'confirm', name: 'done', message: '¿Está terminada la tarea?', default: false }
+    {
+        type: 'confirm',
+        name: 'done',
+        message: '¿Está terminada la tarea?',
+        default: false,
+        when: (answers) => !['__bugfix__', '__none__'].includes(answers.issueKey)
+    }
   ]);
 
   let finalIssueKey = answers.issueKey;
