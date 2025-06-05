@@ -78,7 +78,7 @@ pipeline {
         def unitResult = readFile('unit-test-result.txt').trim()
 
         def summary = "✅ *Build Finalizado* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`\n" +
-                      "📦 *Tests Unitarios:* \n```\n${unitResult.take(300)}\n```\n" +
+                      "📦 *Tests Unitarios:* Pasados con éxito 🆗" +
                       "🔗 ${env.BUILD_URL}"
 
         slackSend(channel: '#pruebas-unitarias', message: summary)
@@ -97,8 +97,7 @@ pipeline {
       script {
         def explanation = readFile('unit-test-explained.txt').trim()
         def failSummary = "❌ *Build fallido* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`\n" +
-                          "📄 *Explicación de la IA:* \n```\n${explanation.take(400)}\n```\n" +
-                          "🔗 ${env.BUILD_URL}"
+                          "📄 *Explicación de la IA:* \n```\n${explanation.take(400)}\n```\n"
 
         slackSend(channel: '#pruebas-unitarias', message: failSummary)
       }

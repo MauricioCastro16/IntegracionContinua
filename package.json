@@ -31,8 +31,8 @@
     "jira:update": "node scripts\\update-jira.js",
     "commit": "node scripts\\interactive-commit.js",
     "push": "node scripts\\push.js",
-    "explain:unit": "node scripts\\explain-test-errors.js"
-
+    "explain:unit": "node scripts\\explain-test-errors.js",
+    "epic-final": "open-cli \"https://youtu.be/8sgycukafqQ?si=4lc1Y5Y-1JrUrct1^&t=66\""
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.5",
