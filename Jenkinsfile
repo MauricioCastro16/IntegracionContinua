@@ -18,9 +18,20 @@ pipeline {
 
     stage('Test Unitarios') {
       steps {
-        bat 'npm run test:unit > unit-test-result.txt || exit /b 1'
+        script {
+          def result = bat(script: 'npm run test:unit > unit-test-result.txt', returnStatus: true)
+
+          if (result == 0) {
+            echo "✅ Test unitarios exitosos"
+          } else {
+            echo "❌ Hubo errores en los tests. Consultando IA..."
+            bat 'npm run explain:unit'
+            archiveArtifacts artifacts: 'unit-test-explained.txt', fingerprint: true
+          }
+        }
       }
     }
+
 
     stage('Build') {
       steps {
@@ -75,8 +86,15 @@ pipeline {
     }
 
     failure {
-      slackSend(channel: '#pruebas-unitarias', message: "❌ *Build fallido* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`\n🔗 ${env.BUILD_URL}")
+      script {
+        def explanation = fileExists('unit-test-explained.txt') ? readFile('unit-test-explained.txt').trim() : '⚠️ No se pudo generar una explicación.'
+
+        def failMessage = "❌ *Build fallido* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`\n" +
+                          "🧠 *Explicación del error:* \n```\n${explanation.take(400)}\n```\n" +
+                          "🔗 ${env.BUILD_URL}"
+
+        slackSend(channel: '#pruebas-unitarias', message: failMessage)
+      }
     }
   }
-
 }
