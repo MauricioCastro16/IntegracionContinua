@@ -25,7 +25,9 @@ pipeline {
             echo "✅ Test unitarios exitosos"
           } else {
             echo "❌ Hubo errores en los tests. Consultando IA..."
-            bat 'npm run explain:unit'
+            withCredentials([string(credentialsId: 'openrouter-api-key', variable: 'OPENROUTER_API_KEY')]) {
+              bat 'npm run explain:unit'
+            }
             archiveArtifacts artifacts: 'unit-test-explained.txt', fingerprint: true
           }
         }
