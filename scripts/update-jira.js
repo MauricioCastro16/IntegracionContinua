@@ -65,7 +65,7 @@ const run = async () => {
 
   if (isDone && status !== 'Listo') {
     await transitionIssue(issueKey, 'Listo');
-  } else if (!isDone && status === 'Por hacer') {
+  } else if (!isDone && status === 'Tareas por hacer') {
     await transitionIssue(issueKey, 'En curso');
   } else {
     console.log(`ℹ️ No se requiere transición. Estado actual: ${status}`);
