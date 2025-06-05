@@ -7,7 +7,7 @@
     "dev": "npx vite dev",
     "build": "npx vite build",
     "preview": "npx vite preview",
-    "prepare": "echo skipped",
+    "prepare": "",
     "check": "npx svelte-kit sync && npx svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "npx svelte-kit sync && npx svelte-check --tsconfig ./tsconfig.json --watch",
     "test:unit": "npx vitest",

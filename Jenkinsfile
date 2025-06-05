@@ -34,8 +34,10 @@ pipeline {
             curl -s -o deploy-log.txt -w "%%{http_code}" -X POST "https://api.render.com/deploy/srv-d0v310a4d50c73e49s10?key=J82gTdp9yuE" > code.txt
             set /p CODE=<code.txt
             if NOT "%CODE%"=="200" (
-                echo Deploy a Render falló con código %CODE%
+                echo ❌ Deploy a Render falló con código %CODE%
                 exit /b 1
+            ) else (
+                echo ✅ Deploy a Render exitoso con código %CODE%
             )
             '''
         }
