@@ -15,9 +15,9 @@ const client = axios.create({
 
 const git = simpleGit();
 
-const getIssueKeyFromCommit = (msg) => {
-  const match = msg.match(/\b[A-Z]+-\d+\b/);
-  return match ? match[0] : null;
+const getIssueKeysFromCommit = (msg) => {
+  const matches = msg.match(/\b[A-Z]+-\d+\b/g);
+  return matches || [];
 };
 
 const commitIncludesDone = (msg) => msg.toLowerCase().includes('#done');
