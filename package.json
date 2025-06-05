@@ -25,11 +25,11 @@
     "open:jenkins": "start /B ngrok http --domain=boxer-calm-molly.ngrok-free.app 8080 && timeout 5 && open-cli http://boxer-calm-molly.ngrok-free.app",
     "open:render": "open-cli https://dashboard.render.com/web/srv-d0v310a4d50c73e49s10",
     "open:slack": "open-cli https://feedbackpruebasic.slack.com",
-    "open:docker": "powershell -Command \"Start-Process 'C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe'\"",
     "open:apps": "start \"\" \"C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe\" && start \"\" \"C:\\Users\\castr\\AppData\\Local\\GitHubDesktop\\GitHubDesktop.exe\"",
     "open:jira": "open-cli https://integracioncontinua.atlassian.net/jira/software/projects/SCRUM/boards/1?sprintStarted=true",
     "open": "npm run open:apps && npm run open:github && npm run open:jenkins && npm run open:render && npm run open:slack && npm run open:jira",
-    "jira:update": "node scripts\\update-jira.js"
+    "jira:update": "node scripts\\update-jira.js",
+    "commit": "node scripts\\interactive-commit.js"
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.5",
@@ -64,7 +64,9 @@
   },
   "dependencies": {
     "axios": "^1.9.0",
+    "chalk": "^5.4.1",
     "dotenv": "^16.5.0",
+    "inquirer": "^12.6.3",
     "node-fetch": "^3.3.2",
     "simple-git": "^3.27.0"
   }
