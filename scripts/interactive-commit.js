@@ -62,7 +62,14 @@ const run = async () => {
 
     const fullDescription = `${description}\n\n${issueKey}${done ? ' #done' : ''}`.trim();
 
-  await git.add('./*');
+  await git.add('./*'); // Asegura que haya algo para comittear
+  const status = await git.status();
+
+  if (status.staged.length === 0) {
+    console.log(chalk.yellow('⚠️ No hay archivos staged para commitear.'));
+    return;
+  }
+  
   await git.commit(title, undefined, { '--message': fullDescription });
 
   console.log(chalk.green(`✅ Commit creado con mensaje:`));
