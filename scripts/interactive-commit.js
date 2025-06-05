@@ -8,8 +8,7 @@ dotenv.config();
 const JIRA_DOMAIN = 'integracioncontinua.atlassian.net';
 const JIRA_USER = process.env.JIRA_USER;
 const JIRA_TOKEN = process.env.JIRA_TOKEN;
-const PROJECT_KEY = 'SCRUM'
-const STATUS_IDS = ['10000', '10001'];
+const PROJECT_KEY = 'SCRUM';
 
 const git = simpleGit();
 
@@ -21,65 +20,102 @@ const client = axios.create({
   }
 });
 
-const getIssues = async () => {
-  try {
-    const res = await client.get(`/search`, {
+const fetchIssuesByStatus = async (statusId, limit = 3) => {
+  const res = await client.get(`/search`, {
     params: {
-        jql: `project=${PROJECT_KEY} AND status in (${STATUS_IDS.join(',')}) ORDER BY created DESC`,
-        maxResults: 6
+      jql: `project=${PROJECT_KEY} AND status = ${statusId} ORDER BY created DESC`,
+      maxResults: limit
     }
-    });
-
-    console.log('✅ Consulta exitosa a Jira. Issues encontrados:');
-    return res
-  } catch (err) {
-    console.error('❌ Error al consultar Jira:', err.response?.data || err.message);
-  }
+  });
+  return res.data.issues || [];
 };
 
-const run = async () => { 
-    await git.add('./*'); // Asegura que haya algo para comittear
-    const status = await git.status();
+const getGroupedIssues = async () => {
+  const toDoIssues = await fetchIssuesByStatus('10000', 3);   // Tareas por hacer
+  const doingIssues = await fetchIssuesByStatus('10001', 3);  // En curso
 
-    if (status.staged.length === 0) {
+  return {
+    'Tareas por hacer': toDoIssues,
+    'En curso': doingIssues
+  };
+};
+
+const run = async () => {
+  await git.add('./*');
+  const status = await git.status();
+
+  if (status.staged.length === 0) {
     console.log(chalk.yellow('⚠️ No hay archivos staged para commitear.'));
     return;
-    }
-    
-    const res = await getIssues();
-    const issues = res.data.issues;
-    if (!Array.isArray(issues)) {
-    console.error('❌ No se pudieron obtener los issues desde Jira.');
-    process.exit(1);
-    }
+  }
 
-  const { title, description, issueKey, done } = await inquirer.prompt([
-        { name: 'title', message: 'Título del commit:' },
-        { name: 'description', message: 'Descripción (opcional):' },
-        {
-            type: 'list',
-            name: 'issueKey',
-            message: 'Seleccioná la tarjeta relacionada:',
-            choices: issues.map(issue => ({
-            name: `${issue.key} - ${issue.fields.summary}`,
-            value: issue.key
-            }))
-        },
-        { type: 'confirm', name: 'done', message: '¿Está terminada la tarea?', default: false }
+  const grouped = await getGroupedIssues();
+  console.log('✅ Consulta exitosa a Jira. Issues encontrados.');
+
+  const issueChoices = [];
+
+  Object.entries(grouped).forEach(([section, issues]) => {
+    if (issues.length > 0) {
+      issueChoices.push(new inquirer.Separator(chalk.bold(section)));
+      issues.forEach(issue => {
+        issueChoices.push({
+          name: `${issue.key} - ${issue.fields.summary}`,
+          value: issue.key
+        });
+      });
+    }
+  });
+
+  issueChoices.push(
+    new inquirer.Separator(chalk.gray('Otros')),
+    { name: 'Ingresar tarjeta manualmente', value: '__manual__' },
+    { name: 'Es un bugfix', value: '__bugfix__' },
+    { name: 'No hay tarjeta relacionada', value: '__none__' }
+  );
+
+  const answers = await inquirer.prompt([
+    { name: 'title', message: 'Título del commit:' },
+    { name: 'description', message: 'Descripción (opcional):' },
+    {
+      type: 'rawlist',
+      name: 'issueKey',
+      message: 'Seleccioná la tarjeta relacionada:',
+      choices: issueChoices
+    },
+    { type: 'confirm', name: 'done', message: '¿Está terminada la tarea?', default: false }
+  ]);
+
+  let finalIssueKey = answers.issueKey;
+  let finalDone = answers.done;
+
+  if (answers.issueKey === '__manual__') {
+    const { customKey } = await inquirer.prompt([
+      { name: 'customKey', message: 'Ingresá el código de la tarjeta Jira:' }
     ]);
+    finalIssueKey = customKey;
+  } else if (answers.issueKey === '__bugfix__') {
+    finalIssueKey = '#bugfix';
+    finalDone = false;
+  } else if (answers.issueKey === '__none__') {
+    finalIssueKey = '';
+    finalDone = false;
+  }
 
-    const fullDescription = `${description}\n\n${issueKey}${done ? ' #done' : ''}`.trim();
+  const fullDescription = [answers.description, finalIssueKey, finalDone ? '#done' : '']
+    .filter(Boolean)
+    .join('\n\n')
+    .trim();
 
-    await git.commit(title, undefined, { '--message': fullDescription });
+  await git.commit(answers.title, undefined, { '--message': fullDescription });
 
   console.log(chalk.green(`✅ Commit creado con mensaje:`));
-  console.log(`${chalk.blue(title)}\n${fullDescription}`);
+  console.log(`${chalk.blue(answers.title)}\n${fullDescription}`);
 };
 
 run().catch((err) => {
   if (err.response) {
-    console.error('❌ Error al hacer el commit:', err.response.status, err.response.data);
+    console.error('❌ Error:', err.response.status, err.response.data);
   } else {
-    console.error('❌ Error al hacer el commit:', err.message || err);
+    console.error('❌ Error:', err.message || err);
   }
 });
