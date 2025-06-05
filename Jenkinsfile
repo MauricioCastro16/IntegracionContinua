@@ -21,18 +21,22 @@ pipeline {
         script {
           def result = bat(script: 'npm run test:unit > unit-test-result.txt', returnStatus: true)
 
-          if (result == 0) {
-            echo "✅ Test unitarios exitosos"
-          } else {
+          if (result != 0) {
             echo "❌ Hubo errores en los tests. Consultando IA..."
             withCredentials([string(credentialsId: 'openrouter-api-key', variable: 'OPENROUTER_API_KEY')]) {
               bat 'npm run explain:unit'
             }
             archiveArtifacts artifacts: 'unit-test-explained.txt', fingerprint: true
+
+            // ⛔️ Marca explícitamente el build como fallido
+            error("Tests unitarios fallaron")
+          } else {
+            echo "✅ Test unitarios exitosos"
           }
         }
       }
     }
+
 
 
     stage('Build') {
@@ -75,34 +79,27 @@ pipeline {
 
   }
   post {
-    always {
+    success {
       script {
         def unitResult = readFile('unit-test-result.txt').trim()
-
-        def summary = "✅ *Build Finalizado* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`\n" +
-                      "📦 *Tests Unitarios:* Pasados con éxito 🆗" +
-                      "🔗 ${env.BUILD_URL}"
-
-        slackSend(channel: '#pruebas-unitarias', message: summary)
+        slackSend(channel: '#pruebas-unitarias', message:
+          "✅ *Build Finalizado* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`\n" +
+          "📦 *Tests Unitarios:* \n```\n${unitResult.take(300)}\n```\n" +
+          "🔗 ${env.BUILD_URL}"
+        )
       }
     }
 
     failure {
-      echo "❌ Hubo errores en los tests. Consultando IA..."
+      def explanation = fileExists('unit-test-explained.txt')
+        ? readFile('unit-test-explained.txt').trim()
+        : 'No se pudo generar una explicación del error.'
 
-      // Usa la credencial segura
-      withCredentials([string(credentialsId: 'openrouter-api-key', variable: 'OPENROUTER_API_KEY')]) {
-        bat 'set OPENROUTER_API_KEY=%OPENROUTER_API_KEY% && npm run explain:unit'
-      }
-
-      // Enviamos el resultado al Slack
-      script {
-        def explanation = readFile('unit-test-explained.txt').trim()
-        def failSummary = "❌ *Build fallido* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`\n" +
-                          "📄 *Explicación de la IA:* \n```\n${explanation.take(400)}\n```\n"
-
-        slackSend(channel: '#pruebas-unitarias', message: failSummary)
-      }
+      slackSend(channel: '#pruebas-unitarias', message:
+        "❌ *Build fallido* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`\n" +
+        "📦 *Explicación de la IA:*\n```\n${explanation.take(300)}\n```\n" +
+        "🔗 ${env.BUILD_URL}"
+      )
     }
   }
 }
