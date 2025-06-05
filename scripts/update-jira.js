@@ -51,24 +51,39 @@ const transitionIssue = async (issueKey, transitionName) => {
 };
 
 const run = async () => {
-  const log = await git.log({ maxCount: 1 });
-  const msg = `${log.latest.message}\n${log.latest.body}`;
-  const issueKey = getIssueKeyFromCommit(msg);
+  // Obtené todos los commits no pusheados (o si estás en Jenkins: entre el último push y HEAD)
+  const log = await git.log();
+  const commits = log.all;
 
-  if (!issueKey) {
-    console.log('⚠️ No se encontró código de tarjeta en el commit');
-    return;
+  const processed = new Set();
+
+  for (const commit of commits) {
+    const msg = `${commit.message}\n${commit.body}`;
+    const keys = getIssueKeysFromCommit(msg);
+
+    for (const key of keys) {
+      if (processed.has(key)) continue;
+      processed.add(key);
+
+      try {
+        const status = await getIssueStatus(key);
+        const isDone = commitIncludesDone(msg);
+
+        if (isDone && status !== 'Listo') {
+          await transitionIssue(key, 'Listo');
+        } else if (!isDone && status === 'Tareas por hacer') {
+          await transitionIssue(key, 'En curso');
+        } else {
+          console.log(`ℹ️ ${key}: No se requiere transición (estado actual: ${status})`);
+        }
+      } catch (e) {
+        console.error(`❌ Error al procesar ${key}:`, e.response?.data || e.message);
+      }
+    }
   }
 
-  const status = await getIssueStatus(issueKey);
-  const isDone = commitIncludesDone(msg);
-
-  if (isDone && status !== 'Listo') {
-    await transitionIssue(issueKey, 'Listo');
-  } else if (!isDone && status === 'Tareas por hacer') {
-    await transitionIssue(issueKey, 'En curso');
-  } else {
-    console.log(`ℹ️ No se requiere transición. Estado actual: ${status}`);
+  if (processed.size === 0) {
+    console.log('⚠️ No se encontraron claves Jira en los commits recientes.');
   }
 };
 
