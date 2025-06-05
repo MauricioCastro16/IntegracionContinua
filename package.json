@@ -29,7 +29,9 @@
     "open:jira": "open-cli https://integracioncontinua.atlassian.net/jira/software/projects/SCRUM/boards/1?sprintStarted=true",
     "open": "npm run open:apps && npm run open:github && npm run open:jenkins && npm run open:render && npm run open:slack && npm run open:jira",
     "jira:update": "node scripts\\update-jira.js",
-    "commit": "node scripts\\interactive-commit.js"
+    "commit": "node scripts\\interactive-commit.js",
+    "push": "node scripts\\push.js"
+
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.5",
