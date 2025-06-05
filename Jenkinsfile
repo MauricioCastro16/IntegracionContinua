@@ -86,14 +86,21 @@ pipeline {
     }
 
     failure {
-      script {
-        def explanation = fileExists('unit-test-explained.txt') ? readFile('unit-test-explained.txt').trim() : '⚠️ No se pudo generar una explicación.'
+      echo "❌ Hubo errores en los tests. Consultando IA..."
 
-        def failMessage = "❌ *Build fallido* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`\n" +
-                          "🧠 *Explicación del error:* \n```\n${explanation.take(400)}\n```\n" +
+      // Usa la credencial segura
+      withCredentials([string(credentialsId: 'openrouter-api-key', variable: 'OPENROUTER_API_KEY')]) {
+        bat 'set OPENROUTER_API_KEY=%OPENROUTER_API_KEY% && npm run explain:unit'
+      }
+
+      // Enviamos el resultado al Slack
+      script {
+        def explanation = readFile('unit-test-explained.txt').trim()
+        def failSummary = "❌ *Build fallido* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`\n" +
+                          "📄 *Explicación de la IA:* \n```\n${explanation.take(400)}\n```\n" +
                           "🔗 ${env.BUILD_URL}"
 
-        slackSend(channel: '#pruebas-unitarias', message: failMessage)
+        slackSend(channel: '#pruebas-unitarias', message: failSummary)
       }
     }
   }
