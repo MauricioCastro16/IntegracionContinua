@@ -36,13 +36,14 @@ pipeline {
                 "📦 *Explicación de la IA:*\n```\n${explanation.take(300)}\n```\n" +
                 "🔗 ${env.BUILD_URL}"
               )
+              error("Tests unitarios fallaron")
+            } else {
+                echo "✅ Test unitarios exitosos"
+                slackSend(
+                  channel: '#pruebas-unitarias', 
+                  message: "📦 *Tests Unitarios pasados exitosamente 🆗"
+                )
             }
-            error("Tests unitarios fallaron")
-          } else {
-            echo "✅ Test unitarios exitosos"
-            slackSend(channel: '#pruebas-unitarias', message: "📦 *Tests Unitarios pasados exitosamente 🆗"
-            )
-          }
         }
       }
     }
