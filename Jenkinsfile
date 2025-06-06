@@ -91,15 +91,17 @@ pipeline {
     }
 
     failure {
-      def explanation = fileExists('unit-test-explained.txt')
-        ? readFile('unit-test-explained.txt').trim()
-        : 'No se pudo generar una explicación del error.'
+      script {
+        def explanation = fileExists('unit-test-explained.txt')
+          ? readFile('unit-test-explained.txt').trim()
+          : 'No se pudo generar una explicación del error.'
 
-      slackSend(channel: '#pruebas-unitarias', message:
-        "❌ *Build fallido* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`\n" +
-        "📦 *Explicación de la IA:*\n```\n${explanation.take(300)}\n```\n" +
-        "🔗 ${env.BUILD_URL}"
-      )
+        slackSend(channel: '#pruebas-unitarias', message:
+          "❌ *Build fallido* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`\n" +
+          "📦 *Explicación de la IA:*\n```\n${explanation.take(300)}\n```\n" +
+          "🔗 ${env.BUILD_URL}"
+        )
+      }
     }
   }
 }
