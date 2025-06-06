@@ -27,17 +27,25 @@ pipeline {
               bat 'npm run explain:unit'
             }
             archiveArtifacts artifacts: 'unit-test-explained.txt', fingerprint: true
+            def explanation = fileExists('unit-test-explained.txt')
+                ? readFile('unit-test-explained.txt').trim()
+                : 'No se pudo generar una explicación del error.'
 
-            // ⛔️ Marca explícitamente el build como fallido
+              slackSend(channel: '#pruebas-unitarias', message:
+                "❌ *Build fallido* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`\n" +
+                "📦 *Explicación de la IA:*\n```\n${explanation.take(300)}\n```\n" +
+                "🔗 ${env.BUILD_URL}"
+              )
+            }
             error("Tests unitarios fallaron")
           } else {
             echo "✅ Test unitarios exitosos"
+            slackSend(channel: '#pruebas-unitarias', message: "📦 *Tests Unitarios pasados exitosamente 🆗"
+            )
           }
         }
       }
     }
-
-
 
     stage('Build') {
       steps {
@@ -71,7 +79,6 @@ pipeline {
         withCredentials([
           usernamePassword(credentialsId: 'jira-credentials', usernameVariable: 'JIRA_USER', passwordVariable: 'JIRA_TOKEN')
         ]) {
-          bat 'echo JIRA_USER=%JIRA_USER% && echo JIRA_TOKEN=%JIRA_TOKEN%'
           bat 'npm run jira:update'
         }
       }
@@ -81,25 +88,18 @@ pipeline {
   post {
     success {
       script {
-        def unitResult = readFile('unit-test-result.txt').trim()
-        slackSend(channel: '#pruebas-unitarias', message:
-          "✅ *Build Finalizado* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`\n" +
-          "📦 *Tests Unitarios:* \n```\n${unitResult.take(300)}\n```\n" +
-          "🔗 ${env.BUILD_URL}"
+        slackSend(
+          channel: '#pruebas-unitarias', 
+          message:"✅ *Build Finalizado* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`"
         )
       }
     }
 
     failure {
       script {
-        def explanation = fileExists('unit-test-explained.txt')
-          ? readFile('unit-test-explained.txt').trim()
-          : 'No se pudo generar una explicación del error.'
-
-        slackSend(channel: '#pruebas-unitarias', message:
-          "❌ *Build fallido* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`\n" +
-          "📦 *Explicación de la IA:*\n```\n${explanation.take(300)}\n```\n" +
-          "🔗 ${env.BUILD_URL}"
+        slackSend(
+          channel: '#pruebas-unitarias', 
+          message: "❌ *Build fallido* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`"
         )
       }
     }
