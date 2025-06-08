@@ -1,5 +1,7 @@
 test-results
 node_modules
+.svelte-kit
+.svelte-kit/
 
 # Output
 .output
@@ -29,7 +31,7 @@ npm-debug.log*
 pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-package-lock.json # opcional, si usás lockfiles por entorno
+package-lock.json
 
 # SvelteKit & Vite
 .svelte-kit/
