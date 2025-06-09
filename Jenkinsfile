@@ -117,7 +117,6 @@ pipeline {
       }
     }
 
-
     stage('Publicar artefactos') {
       steps {
         archiveArtifacts artifacts: '*.txt', fingerprint: true
