@@ -19,8 +19,8 @@ pipeline {
     stage('Test Unitarios') {
       steps {
         script {
-          // Ejecutamos los tests y guardamos la salida en un archivo mientras también la mostramos en consola.
-          def result = bat(script: 'npm run test:unit | tee unit-test-result.txt', returnStatus: true)
+          // Redirigir la salida a un archivo
+          def result = bat(script: 'npm run test:unit > unit-test-result.txt', returnStatus: true)
 
           // Verificamos si los tests fallaron.
           if (result != 0) {
@@ -59,6 +59,7 @@ pipeline {
         }
       }
     }
+
 
 
     stage('Build') {
