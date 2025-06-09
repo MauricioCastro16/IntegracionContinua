@@ -3,7 +3,12 @@ import simpleGit from 'simple-git';
 import axios from 'axios';
 import chalk from 'chalk';
 import dotenv from 'dotenv';
+import { exec } from 'child_process'; // Asegúrate de importar exec
+import util from 'util'; // Asegúrate de importar util
 dotenv.config();
+
+// Convertimos exec en una función que devuelve una promesa
+const execPromise = util.promisify(exec);
 
 const JIRA_DOMAIN = 'integracioncontinua.atlassian.net';
 const JIRA_USER = process.env.JIRA_USER;
@@ -49,7 +54,19 @@ const run = async () => {
 		return;
 	}
 
-	const grouped = await getGroupedIssues();
+	// Ejecuatamos `npm run format` y `npm run lint` de forma secuencial
+	const formatPromise = execPromise('npm run format');
+	await formatPromise; // Esperamos que termine el formato
+
+	const lintPromise = execPromise('npm run lint');
+	await lintPromise; // Esperamos que termine el lint
+
+	// Mientras tanto, realizamos la conexión con Jira en paralelo
+	const jiraFetchPromise = getGroupedIssues();
+
+	console.log('✅ Esperando la respuesta de Jira...');
+
+	const grouped = await jiraFetchPromise; // Esperamos la respuesta de Jira
 	console.log('✅ Consulta exitosa a Jira. Issues encontrados.');
 
 	const issueChoices = [];
@@ -83,7 +100,7 @@ const run = async () => {
 				}
 				return true; // Si la entrada es válida, continúa
 			}
-		  },
+		},
 		{ name: 'description', message: 'Descripción (opcional):' },
 		{
 			type: 'rawlist',
