@@ -12,6 +12,7 @@ pipeline {
 
     stage('Instalar dependencias') {
       steps {
+        bat 'rmdir /s /q node_modules'
         bat 'npm install'
       }
     }
