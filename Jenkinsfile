@@ -82,14 +82,17 @@ pipeline {
     stage('Deploy a Render') {
       steps {
         script {
-          // Ejecutar el despliegue y obtener el código de estado.
+          // Ejecutar el despliegue y capturar el código de estado.
           def deployResult = bat(script: '''
             curl -s -o deploy-log.txt -w "%%{http_code}" -X POST "https://api.render.com/deploy/srv-d0v310a4d50c73e49s10?key=J82gTdp9yuE" > code.txt
             set /p CODE=<code.txt
             echo %CODE%
           ''', returnStdout: true).trim()
 
-          // Comprobar el código de estado HTTP
+          // Asegurarse de eliminar cualquier espacio extra
+          deployResult = deployResult.trim()
+
+          // Verificar el código de estado HTTP
           if (deployResult == '200') {
             echo "✅ Deploy a Render exitoso con código ${deployResult}"
 
@@ -113,7 +116,6 @@ pipeline {
         }
       }
     }
-
 
     stage('Publicar artefactos') {
       steps {
