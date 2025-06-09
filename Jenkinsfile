@@ -96,16 +96,14 @@ pipeline {
                     if (deployStatus == "200") {
                         slackSend(
                             channel: '#feedback',
-                            message: "✅ Despliegue exitoso en Render para `${env.JOB_NAME} #${env.BUILD_NUMBER}`\n" +
-                                      "🔗 *URL de despliegue:* https://dashboard.render.com\n" +
-                                      "📄 *Log de despliegue:* `deploy-log.txt`"
+                            message: "✅ Despliegue exitoso en Render" +
+                                      "🔗 *URL de despliegue:* https://integracioncontinua-opr1.onrender.com\n"
                         )
                     } else {
                         slackSend(
                             channel: '#feedback',
-                            message: "❌ Error en el despliegue en Render para `${env.JOB_NAME} #${env.BUILD_NUMBER}`\n" +
-                                      "🔴 *Código de error:* ${deployStatus}\n" +
-                                      "📄 *Log de despliegue:* `deploy-log.txt`"
+                            message: "❌ Error en el despliegue en Render" +
+                                      "🔴 *Código de error:* ${deployStatus}\n"
                         )
                         error("Despliegue fallido con el código: ${deployStatus}")
                     }
