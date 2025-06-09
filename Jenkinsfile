@@ -31,7 +31,7 @@ pipeline {
                 ? readFile('unit-test-explained.txt').trim()
                 : 'No se pudo generar una explicación del error.'
 
-              slackSend(channel: '#pruebas-unitarias', message:
+              slackSend(channel: '#feedback', message:
                 "❌ *Test unitarios fallidos* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`\n" +
                 "📦 *Explicación de la IA:*\n```\n${explanation.take(1000)}\n```\n" +
                 "🔗 ${env.BUILD_URL}"
@@ -40,7 +40,7 @@ pipeline {
             } else {
                 echo "✅ Test unitarios exitosos"
                 slackSend(
-                  channel: '#pruebas-unitarias', 
+                  channel: 'feedback', 
                   message: "📦 *Tests Unitarios pasados exitosamente 🆗"
                 )
             }
@@ -90,7 +90,7 @@ pipeline {
     success {
       script {
         slackSend(
-          channel: '#pruebas-unitarias', 
+          channel: '#feedback', 
           message:"✅ *Build Finalizado* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`"
         )
       }
@@ -99,7 +99,7 @@ pipeline {
     failure {
       script {
         slackSend(
-          channel: '#pruebas-unitarias', 
+          channel: '#feedback', 
           message: "❌ *Build fallido* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`"
         )
       }
