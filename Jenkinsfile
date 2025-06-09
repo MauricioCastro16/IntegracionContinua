@@ -3,6 +3,7 @@ pipeline {
   tools {
       nodejs 'Node 20'
     }
+
   stages {
     stage('Checkout') {
       steps {
@@ -15,7 +16,7 @@ pipeline {
         script {
           slackSend(
             channel: '#feedback', 
-            message: "---------------------------------\n🚀 *Iniciando Build* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`"
+            message: "---------------------------------------------------\n🚀 *Iniciando Build* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`"
           )
         }
       }
@@ -71,8 +72,6 @@ pipeline {
       }
     }
 
-
-
     stage('Build') {
       steps {
         bat 'npm run build'
@@ -82,40 +81,39 @@ pipeline {
     stage('Deploy a Render') {
       steps {
         script {
-          // Ejecutar el despliegue y capturar el código de estado HTTP correctamente
-          def deployResult = bat(script: '''
-            curl -s -o deploy-log.txt -w "%{http_code}" -X POST "https://api.render.com/deploy/srv-d0v310a4d50c73e49s10?key=J82gTdp9yuE" > code.txt
+          // Cargar el archivo .env (esto es para cargar el token desde un archivo seguro)
+          def apiKey = sh(script: 'echo $RENDER_API_KEY', returnStdout: true).trim()
+
+          // Ejecutar el despliegue y guardar el log
+          def result = bat(script: """
+            curl -s -o deploy-log.txt -w "%%{http_code}" -X POST "https://api.render.com/deploy/srv-d0v310a4d50c73e49s10?key=${apiKey}" > code.txt
             set /p CODE=<code.txt
-            echo %CODE%
-          ''', returnStdout: true).trim()
+          """, returnStatus: true)
 
-          // Asegúrate de que la variable CODE solo contiene el valor numérico del código HTTP
-          deployResult = deployResult.trim()
+          // Leer el código de estado del despliegue
+          def deployStatus = readFile('code.txt').trim()
 
-          // Verificar el código de estado HTTP
-          if (deployResult == '200') {
-            echo "✅ Deploy a Render exitoso con código ${deployResult}"
-
-            // Enviar notificación a Slack si el deploy fue exitoso.
+          // Notificación a Slack dependiendo del resultado
+          if (deployStatus == "200") {
             slackSend(
-              channel: '#feedback', 
-              message: "✅ *Deploy a Render exitoso* en `${env.JOB_NAME} #${env.BUILD_NUMBER}` con código: ${deployResult}\n🔗 ${env.BUILD_URL}"
+              channel: '#feedback',
+              message: "✅ Despliegue exitoso en Render para `${env.JOB_NAME} #${env.BUILD_NUMBER}`\n" +
+                      "🔗 *URL de despliegue:* https://dashboard.render.com\n" +
+                      "📄 *Log de despliegue:* `deploy-log.txt`"
             )
           } else {
-            echo "❌ Deploy a Render falló con código ${deployResult}"
-
-            // Enviar notificación a Slack si el deploy falló.
             slackSend(
-              channel: '#feedback', 
-              message: "❌ *Deploy a Render fallido* en `${env.JOB_NAME} #${env.BUILD_NUMBER}` con código: ${deployResult}\n🔗 ${env.BUILD_URL}"
+              channel: '#feedback',
+              message: "❌ Error en el despliegue en Render para `${env.JOB_NAME} #${env.BUILD_NUMBER}`\n" +
+                      "🔴 *Código de error:* ${deployStatus}\n" +
+                      "📄 *Log de despliegue:* `deploy-log.txt`"
             )
-
-            // Marcar el build como fallido
-            error("Deploy a Render falló")
+            error("Despliegue fallido con el código: ${deployStatus}")
           }
         }
       }
     }
+
 
     stage('Publicar artefactos') {
       steps {
