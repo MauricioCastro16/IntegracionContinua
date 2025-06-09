@@ -79,39 +79,39 @@ pipeline {
     }
 
     stage('Deploy a Render') {
-      steps {
-        script {
-          // Cargar el archivo .env (esto es para cargar el token desde un archivo seguro)
-          def apiKey = sh(script: 'echo $RENDER_API_KEY', returnStdout: true).trim()
+        steps {
+            script {
+                // Usamos la credencial desde el almacén de credenciales de Jenkins
+                withCredentials([string(credentialsId: 'render-api-token', variable: 'RENDER_API_KEY')]) {
+                    // Usamos la variable $RENDER_API_KEY en el bat
+                    def result = bat(script: """
+                        curl -s -o deploy-log.txt -w "%%{http_code}" -X POST "https://api.render.com/deploy/srv-d0v310a4d50c73e49s10?key=${env.RENDER_API_KEY}" > code.txt
+                        set /p CODE=<code.txt
+                    """, returnStatus: true)
 
-          // Ejecutar el despliegue y guardar el log
-          def result = bat(script: """
-            curl -s -o deploy-log.txt -w "%%{http_code}" -X POST "https://api.render.com/deploy/srv-d0v310a4d50c73e49s10?key=${apiKey}" > code.txt
-            set /p CODE=<code.txt
-          """, returnStatus: true)
+                    // Leer el código de estado del despliegue
+                    def deployStatus = readFile('code.txt').trim()
 
-          // Leer el código de estado del despliegue
-          def deployStatus = readFile('code.txt').trim()
-
-          // Notificación a Slack dependiendo del resultado
-          if (deployStatus == "200") {
-            slackSend(
-              channel: '#feedback',
-              message: "✅ Despliegue exitoso en Render para `${env.JOB_NAME} #${env.BUILD_NUMBER}`\n" +
-                      "🔗 *URL de despliegue:* https://dashboard.render.com\n" +
-                      "📄 *Log de despliegue:* `deploy-log.txt`"
-            )
-          } else {
-            slackSend(
-              channel: '#feedback',
-              message: "❌ Error en el despliegue en Render para `${env.JOB_NAME} #${env.BUILD_NUMBER}`\n" +
-                      "🔴 *Código de error:* ${deployStatus}\n" +
-                      "📄 *Log de despliegue:* `deploy-log.txt`"
-            )
-            error("Despliegue fallido con el código: ${deployStatus}")
-          }
+                    // Notificación a Slack dependiendo del resultado
+                    if (deployStatus == "200") {
+                        slackSend(
+                            channel: '#feedback',
+                            message: "✅ Despliegue exitoso en Render para `${env.JOB_NAME} #${env.BUILD_NUMBER}`\n" +
+                                      "🔗 *URL de despliegue:* https://dashboard.render.com\n" +
+                                      "📄 *Log de despliegue:* `deploy-log.txt`"
+                        )
+                    } else {
+                        slackSend(
+                            channel: '#feedback',
+                            message: "❌ Error en el despliegue en Render para `${env.JOB_NAME} #${env.BUILD_NUMBER}`\n" +
+                                      "🔴 *Código de error:* ${deployStatus}\n" +
+                                      "📄 *Log de despliegue:* `deploy-log.txt`"
+                        )
+                        error("Despliegue fallido con el código: ${deployStatus}")
+                    }
+                }
+            }
         }
-      }
     }
 
 
