@@ -16,7 +16,7 @@ pipeline {
         script {
           slackSend(
             channel: '#feedback', 
-            message: "---------------------------------------------------\n🚀 *Iniciando Build* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`"
+            message: "---------------------------------------------\n🛠️🧱 *Iniciando Build* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`"
           )
         }
       }
@@ -36,36 +36,29 @@ pipeline {
 
           // Verificamos si los tests fallaron.
           if (result != 0) {
-            echo "❌ Hubo errores en los tests. Consultando IA..."
-            
             // Usamos el token de OpenRouter para pedir la explicación de los errores.
             withCredentials([string(credentialsId: 'openrouter-api-key', variable: 'OPENROUTER_API_KEY')]) {
               bat 'npm run explain:unit'
             }
-
             // Archivar el archivo que contiene la explicación de la IA.
             archiveArtifacts artifacts: 'unit-test-explained.txt', fingerprint: true
-
             // Leer el archivo con la explicación generada por la IA.
             def explanation = fileExists('unit-test-explained.txt')
                 ? readFile('unit-test-explained.txt').trim()
                 : 'No se pudo generar una explicación del error.'
-
             // Enviar notificación a Slack.
             slackSend(channel: '#feedback', message:
-              "❌ *Test unitarios fallidos* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`\n" +
-              "📦 *Explicación de la IA:*\n```\n${explanation.take(1000)}\n```\n" +
+              "🧪❌ *Test unitarios fallidos* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`\n" +
+              "🤖 *Explicación de la IA:*\n```\n${explanation.take(1000)}\n```\n" +
               "🔗 ${env.BUILD_URL}"
             )
             
             error("Tests unitarios fallaron")
           } else {
-            echo "✅ Test unitarios exitosos"
-            
             // Enviar notificación a Slack si los tests pasaron.
             slackSend(
               channel: 'feedback', 
-              message: "📦 *Tests Unitarios pasados exitosamente 🆗"
+              message: "🧪✅ *Tests Unitarios pasados exitosamente* 🆗"
             )
           }
         }
@@ -96,14 +89,14 @@ pipeline {
                     if (deployStatus == "200") {
                         slackSend(
                             channel: '#feedback',
-                            message: "✅ Despliegue exitoso en Render" +
+                            message: "🚀✅ Despliegue exitoso en Render\n" +
                                       "🔗 *URL de despliegue:* https://integracioncontinua-opr1.onrender.com\n"
                         )
                     } else {
                         slackSend(
                             channel: '#feedback',
-                            message: "❌ Error en el despliegue en Render" +
-                                      "🔴 *Código de error:* ${deployStatus}\n"
+                            message: "🚀❌ Error en el despliegue en Render\n" +
+                                      "🔴 *Código de error:* ${deployStatus}"
                         )
                         error("Despliegue fallido con el código: ${deployStatus}")
                     }
@@ -135,7 +128,7 @@ pipeline {
       script {
         slackSend(
           channel: '#feedback', 
-          message:"✅ *Build Finalizado* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`"
+          message:"🔨✅ *Build Finalizado* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`"
         )
       }
     }
@@ -144,7 +137,7 @@ pipeline {
       script {
         slackSend(
           channel: '#feedback', 
-          message: "❌ *Build fallido* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`"
+          message: "🔨❌ *Build fallido* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`"
         )
       }
     }
