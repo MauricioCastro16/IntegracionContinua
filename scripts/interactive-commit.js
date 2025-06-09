@@ -74,7 +74,16 @@ const run = async () => {
 	);
 
 	const answers = await inquirer.prompt([
-		{ name: 'title', message: 'Título del commit:' },
+		{
+			name: 'title',
+			message: 'Título del commit:',
+			validate: function (input) {
+				if (input.trim() === '') {
+					return 'El título no puede estar vacío. Por favor ingresa un título válido.';
+				}
+				return true; // Si la entrada es válida, continúa
+			}
+		  },
 		{ name: 'description', message: 'Descripción (opcional):' },
 		{
 			type: 'rawlist',
