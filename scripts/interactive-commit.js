@@ -45,6 +45,17 @@ const getGroupedIssues = async () => {
 	};
 };
 
+// Función para ejecutar comandos y capturar su salida (stdout y stderr)
+const runCommand = async (command) => {
+	try {
+		const { stdout, stderr } = await execPromise(command);
+		return { stdout, stderr, success: true };
+	} catch (error) {
+		// Si ocurre un error, capturamos la salida del error
+		return { stdout: error.stdout, stderr: error.stderr, success: false };
+	}
+};
+
 const run = async () => {
 	await git.add('./*');
 	const status = await git.status();
@@ -54,12 +65,20 @@ const run = async () => {
 		return;
 	}
 
-	// Ejecuatamos `npm run format` y `npm run lint` de forma secuencial
-	const formatPromise = execPromise('npm run format');
-	await formatPromise; // Esperamos que termine el formato
+	// Ejecutamos `npm run format` y `npm run lint` de forma secuencial
+	const formatResult = await runCommand('npm run format');
+	if (!formatResult.success) {
+		console.log(chalk.red('❌ Error en `npm run format`:'));
+		console.log(formatResult.stderr || formatResult.stdout); // Mostramos el error detallado
+		return; // Si format falla, detenemos el flujo
+	}
 
-	const lintPromise = execPromise('npm run lint');
-	await lintPromise; // Esperamos que termine el lint
+	const lintResult = await runCommand('npm run lint');
+	if (!lintResult.success) {
+		console.log(chalk.red('❌ Error en `npm run lint`:'));
+		console.log(lintResult.stderr || lintResult.stdout); // Mostramos el error detallado
+		return; // Si lint falla, detenemos el flujo
+	}
 
 	// Mientras tanto, realizamos la conexión con Jira en paralelo
 	const jiraFetchPromise = getGroupedIssues();
