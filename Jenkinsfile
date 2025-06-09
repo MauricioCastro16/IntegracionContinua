@@ -16,7 +16,7 @@ pipeline {
         script {
           slackSend(
             channel: '#feedback', 
-            message: "---------------------------------------------\n🛠️🧱 *Iniciando Build* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`"
+            message: "---------------------------------------------\n⏳ *Iniciando la integración* en `${env.JOB_NAME} #${env.BUILD_NUMBER}` ⏳"
           )
         }
       }
@@ -67,9 +67,29 @@ pipeline {
 
     stage('Build') {
       steps {
-        bat 'npm run build'
-      }
+          script {
+              // Ejecutar el build
+              def result = bat(script: 'npm run build', returnStatus: true)
+
+              // Verificar el estado del proceso de build
+              if (result == 0) {
+                  // Enviar notificación si el build fue exitoso
+                  slackSend(
+                      channel: '#feedback',
+                      message: "🛠️✅ *Build exitoso* \n"
+                  )
+              } else {
+                  // Enviar notificación si el build falló
+                  slackSend(
+                      channel: '#feedback',
+                      message: "🔨❌ *Build fallido* \n"
+                  )
+                  error("El proceso de Build falló")
+              }
+            }
+        }
     }
+
 
     stage('Deploy a Render') {
         steps {
@@ -128,7 +148,7 @@ pipeline {
       script {
         slackSend(
           channel: '#feedback', 
-          message:"🔨✅ *Build Finalizado* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`"
+          message:"⌛✅ *Integración finalizada* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`"
         )
       }
     }
@@ -137,7 +157,7 @@ pipeline {
       script {
         slackSend(
           channel: '#feedback', 
-          message: "🔨❌ *Build fallido* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`"
+          message: "⌛❌ *Integración fallida* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`"
         )
       }
     }
