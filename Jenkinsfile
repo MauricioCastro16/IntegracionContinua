@@ -58,7 +58,7 @@ pipeline {
             // Enviar notificación a Slack si los tests pasaron.
             slackSend(
               channel: 'feedback', 
-              message: "🧪✅ *Tests Unitarios pasados exitosamente* 🆗"
+              message: "🧪✅ *Tests Unitarios pasados exitosamente* "
             )
           }
         }
@@ -148,7 +148,7 @@ pipeline {
       script {
         slackSend(
           channel: '#feedback', 
-          message:"⌛✅ *Integración finalizada* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`"
+          message:"⌛✅ *Integración finalizada* en `${env.JOB_NAME} #${env.BUILD_NUMBER}` ⌛"
         )
       }
     }
@@ -157,7 +157,7 @@ pipeline {
       script {
         slackSend(
           channel: '#feedback', 
-          message: "⌛❌ *Integración fallida* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`"
+          message: "⌛❌ *Integración fallida* en `${env.JOB_NAME} #${env.BUILD_NUMBER}` ⌛"
         )
       }
     }

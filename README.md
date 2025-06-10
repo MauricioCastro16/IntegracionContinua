@@ -1,38 +1,32 @@
-# sv
+# Proyecto SvelteKit Minimal
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+## Descripción
 
-## Creating a project
+Este proyecto está construido con **SvelteKit** minimal, un **framework de interfaz de usuario de Node.js**. Utiliza diversas tecnologías modernas para asegurar un desarrollo eficiente y de alta calidad, implementando pruebas automáticas, integración continua y despliegue en la nube.
 
-If you're seeing this, you've probably already done this step. Congrats!
+![Pipeline de integración continua](./images/Pipeline_CI.png)
 
-```bash
-# create a new project in the current directory
-npx sv create
 
-# create a new project in my-app
-npx sv create my-app
-```
+## Tecnologías Utilizadas
 
-## Developing
+- **SvelteKit Minimal**: Framework de desarrollo de aplicaciones de interfaz de usuario, construido sobre Node.js.
+- **@sveltejs/adapter-node**: Adaptador utilizado para desplegar la aplicación en un servidor Node.js, ideal para entornos de producción.
+- **GitHub**: Plataforma utilizada para el control de versiones.
+- **Docker**: Herramienta para la gestión de entornos de ejecución.
+- **npm**: Gestor de paquetes utilizado para manejar dependencias y scripts.
+- **Vite**: Bundler de desarrollo ultrarrápido utilizado para la construcción y desarrollo del proyecto.
+- **ViTest**: Framework de pruebas unitarias automáticas.
+- **Playwright**: Herramienta para pruebas end-to-end (e2e).
+- **EsLint**: Linter para asegurar un código limpio y consistente.
+- **TypeScript**: Lenguaje para asegurar la robustez del código.
+- **Prettier**: Herramienta de formateo de código para mantener la consistencia.
+- **Tailwind CSS**: Framework de CSS para un diseño rápido y personalizable.
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+## Integración Continua y Despliegue
 
-```bash
-npm run dev
+- **Jenkins**: Se utiliza para la integración continua, donde se automatiza la ejecución de pruebas y la construcción del proyecto.
+- **Render**: Plataforma para el despliegue del proyecto en la nube.
+  
+## Monitoreo de Errores
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+Se ha integrado **OpenRouter** con **DeepSeek** para proporcionar explicaciones en lenguaje natural sobre los errores de las pruebas. Esto facilita la depuración y mejora la eficiencia durante el desarrollo.
