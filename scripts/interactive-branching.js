@@ -39,20 +39,50 @@ async function gitFlow() {
 				]);
 				await git.checkoutLocalBranch(`Hfx-${hotfixName}`);
 				console.log(`Creada y cambiada a la rama Hfx-${hotfixName}`);
-			} else if (response.action === 'checkout_hotfix') {
-				const hotfixBranches = await git.branch();
-				const hotfixes = hotfixBranches.all.filter((b) => b.startsWith('Hfx-'));
-				const { hotfixBranch } = await inquirer.prompt([
-					{
-						type: 'list',
-						name: 'hotfixBranch',
-						message: 'Selecciona una rama de hotfix existente:',
-						choices: hotfixes
-					}
-				]);
-				await git.checkout(hotfixBranch);
-				console.log(`Cambiado a la rama ${hotfixBranch}`);
-			}
+            } else if (response.action === 'checkout_hotfix') {
+                const hotfixBranches = await git.branch();
+                const hotfixes = hotfixBranches.all.filter((b) => b.startsWith('Hfx-'));
+
+                if (hotfixes.length === 0) {
+                    // Si no hay ramas de hotfix, informa al usuario y ofrécele la opción de crear una nueva
+                    console.log('No hay ramas de hotfix disponibles.');
+                    const { createNewHotfix } = await inquirer.prompt([
+                        {
+                            type: 'confirm',
+                            name: 'createNewHotfix',
+                            message: '¿Quieres crear una nueva rama de hotfix?',
+                            default: true
+                        }
+                    ]);
+
+                    if (createNewHotfix) {
+                        const { hotfixName } = await inquirer.prompt([
+                            {
+                                type: 'input',
+                                name: 'hotfixName',
+                                message: 'Ingresa el nombre del hotfix:',
+                                default: 'Hfx-'
+                            }
+                        ]);
+                        await git.checkoutLocalBranch(`Hfx-${hotfixName}`);
+                        console.log(`Creada y cambiada a la rama Hfx-${hotfixName}`);
+                    } else {
+                        console.log('No se creará ninguna rama de hotfix.');
+                    }
+                } else {
+                    // Si hay ramas de hotfix, muestra el prompt para que el usuario seleccione una
+                    const { hotfixBranch } = await inquirer.prompt([
+                        {
+                            type: 'list',
+                            name: 'hotfixBranch',
+                            message: 'Selecciona una rama de hotfix existente:',
+                            choices: hotfixes
+                        }
+                    ]);
+                    await git.checkout(hotfixBranch);
+                    console.log(`Cambiado a la rama ${hotfixBranch}`);
+                }
+            }              
 		} else if (branch === 'development') {
 			//Estás en la rama de development
 			const response = await inquirer.prompt([
