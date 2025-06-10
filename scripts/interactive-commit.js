@@ -3,8 +3,8 @@ import simpleGit from 'simple-git';
 import axios from 'axios';
 import chalk from 'chalk';
 import dotenv from 'dotenv';
-import { exec } from 'child_process'; // Asegúrate de importar exec
-import util from 'util'; // Asegúrate de importar util
+import { exec } from 'child_process';
+import util from 'util';
 dotenv.config();
 
 // Convertimos exec en una función que devuelve una promesa

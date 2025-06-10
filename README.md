@@ -6,7 +6,6 @@ Este proyecto está construido con **SvelteKit** minimal, un **framework de inte
 
 ![Pipeline de integración continua](./images/Pipeline_CI.png)
 
-
 ## Tecnologías Utilizadas
 
 - **SvelteKit Minimal**: Framework de desarrollo de aplicaciones de interfaz de usuario, construido sobre Node.js.
@@ -26,7 +25,7 @@ Este proyecto está construido con **SvelteKit** minimal, un **framework de inte
 
 - **Jenkins**: Se utiliza para la integración continua, donde se automatiza la ejecución de pruebas y la construcción del proyecto.
 - **Render**: Plataforma para el despliegue del proyecto en la nube.
-  
+
 ## Monitoreo de Errores
 
 Se ha integrado **OpenRouter** con **DeepSeek** para proporcionar explicaciones en lenguaje natural sobre los errores de las pruebas. Esto facilita la depuración y mejora la eficiencia durante el desarrollo.
