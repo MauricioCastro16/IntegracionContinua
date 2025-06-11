@@ -47,11 +47,18 @@
 		result = 0;
 		prevResult = 0; // Resetear el resultado anterior
 	}
+
+	function deleteLast() {
+		currentInput = currentInput.slice(0, -1); // Elimina el último carácter
+		if (currentInput === '') {
+			result = 0; // Resetear el resultado si la entrada está vacía
+		}
+	}
 </script>
 
 <main class="calculator">
 	<div class="display">
-		<p>{currentInput}</p>
+		<p class="input">{currentInput}</p>
 		<p class="result">={result}</p>
 	</div>
 
@@ -67,14 +74,14 @@
 			<button on:click={() => addToInput('8', 'number')}>8</button>
 			<button on:click={() => addToInput('9', 'number')}>9</button>
 			<button on:click={() => addToInput('/', 'operation')}>/</button>
-			<button on:click={() => addToInput('(', 'number')}>(</button>
+			<button on:click={() => addToInput('(', 'number')}>&#40</button>
 		</div>
 		<div class="row">
 			<button on:click={() => addToInput('4', 'number')}>4</button>
 			<button on:click={() => addToInput('5', 'number')}>5</button>
 			<button on:click={() => addToInput('6', 'number')}>6</button>
 			<button on:click={() => addToInput('*', 'operation')}>*</button>
-			<button on:click={() => addToInput(')', 'number')}>)</button>
+			<button on:click={() => addToInput(')', 'number')}>&#41</button>
 		</div>
 		<div class="row">
 			<button on:click={() => addToInput('1', 'number')}>1</button>
@@ -88,6 +95,7 @@
 			<button on:click={() => addToInput('.', 'number')}>.</button>
 			<button on:click={() => addToInput('+', 'operation')}>+</button>
 			<button on:click={calculate}>=</button>
+			<button on:click={deleteLast}>⌫</button>
 			<button on:click={clearDisplay}>C</button>
 		</div>
 	</div>
