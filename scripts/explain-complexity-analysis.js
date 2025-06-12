@@ -7,13 +7,19 @@ const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 const MODEL = 'deepseek/deepseek-chat:free';
 
 const explainErrors = async () => {
-	const testOutput = fs.readFileSync('coverage-test-result.txt', 'utf-8');
+	const testOutput = fs.readFileSync('complexity-results.txt', 'utf-8');
 
 	const prompt = `
 Genera un mensaje, tenés ESTRICTAMENTE PROHIBIDO el uso de ASTERISCOS y NEGRITAS, pero usá emojis y cuando uses comillas, usá estás: ", 
-que sea breve para Slack sobre el estado de la cobertura de pruebas del proyecto, basándote en la siguiente tabla de cobertura. 
-El mensaje debe ser claro, conciso, y resaltar las áreas clave, incluyendo los archivos que tienen baja cobertura y las áreas que 
-están bien cubiertas. Aquí está la tabla de cobertura:
+que sea breve para Slack A continuación te paso un resumen del análisis de complejidad ciclomática y mantenibilidad de código en un proyecto 
+SvelteKit.
+Quiero que me des:
+Un resumen general del estado del código.
+Qué archivos o funciones deberían revisarse primero.
+Qué indicadores muestran problemas o áreas críticas.
+Sugerencias para reducir la complejidad o mejorar mantenibilidad.
+Usá tu criterio técnico para sacar conclusiones a partir de métricas como complejidad ciclomática y mantenibilidad. Si hay valores inválidos o negativos, explicá qué podrían significar.
+Resultados del análisis:
 
 \`\`\`
 ${testOutput.slice(0, 4000)}
@@ -36,8 +42,8 @@ ${testOutput.slice(0, 4000)}
 		);
 
 		const result = response.data.choices[0].message.content;
-		console.log('🧠 Explicación de la cobertura:\n', result);
-		fs.writeFileSync('coverage-test-explained.txt', result);
+		console.log('🧠 Analisis de la complejidad:\n', result);
+		fs.writeFileSync('complexity-analysis-explained.txt', result);
 	} catch (err) {
 		console.error('❌ Error al consultar la IA:', err.response?.data || err.message);
 	}

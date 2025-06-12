@@ -35,6 +35,7 @@
 		"push": "node scripts\\push.js",
 		"explain:unit": "node scripts\\explain-test-errors.js",
 		"explain:coverage": "node scripts\\explain-coverage-test.js",
+		"explain:complexity": "node scripts\\explain-complexity-analysis.js",
 		"epic-final": "open-cli \"https://youtu.be/8sgycukafqQ?si=4lc1Y5Y-1JrUrct1^&t=66\"",
 		"help": "node scripts\\help.js",
 		"complejidad": "node scripts\\complejidad.js"

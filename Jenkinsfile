@@ -100,15 +100,22 @@ pipeline {
           // Redirigir la salida a un archivo
           def result = bat(script: 'npm run complejidad > complexity-results.txt', returnStatus: true)
 
-          def explanation = fileExists('complexity-results.txt')
-              ? readFile('complexity-results.txt').trim()
+          // Usamos el token de OpenRouter para pedir la explicación de los errores.
+          withCredentials([string(credentialsId: 'openrouter-api-key', variable: 'OPENROUTER_API_KEY')]) {
+            bat 'npm run explain:complexity'
+          }
+          // Archivar el archivo que contiene la explicación de la IA.
+          archiveArtifacts artifacts: 'complexity-analysis-explained.txt', fingerprint: true
+
+          def explanation = fileExists('complexity-analysis-explained.txt')
+              ? readFile('complexity-analysis-explained.txt').trim()
               : 'No se pudo generar un análisis de la complejidad.'
 
           slackSend(
             channel: '#feedback', 
             message:
               "🧩✅ *Analisis de la compejidad realizado* \n" +
-              "```\n${explanation.take(1000)}\n```\n"
+              "🤖 *Explicación de la IA:* 🤖\n```\n${explanation.take(1000)}\n```\n"
           )
         }
       }
