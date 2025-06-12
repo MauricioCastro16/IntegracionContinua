@@ -1,6 +1,6 @@
 // tests/rootN.test.ts
 import { describe, it, expect } from 'vitest';
-import { RootN } from '../src/lib/RootN';
+import { RootN } from '$lib/RootN';
 
 describe('RootN function', () => {
 	it('should return the correct result for positive n and m', () => {

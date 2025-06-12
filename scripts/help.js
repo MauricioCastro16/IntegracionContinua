@@ -14,7 +14,8 @@ ${chalk.bold.green('- ... lint:')} ${chalk.blue('Valida el formato y realiza un 
 ${chalk.magenta('Testing:\n')}${chalk.red('npm run...')}
 ${chalk.bold.green('- ... test:')} ${chalk.blue('Corre los test unitarios.')}
 ${chalk.bold.green('- ... test-e2e:')} ${chalk.blue('Corre los test E2E.')}
-${chalk.bold.green('- ... cambiarEntornoE2E')} ${chalk.gray('(local || render)')} ${chalk.bold.green(':')} ${chalk.blue('Cambia el entorno de los test E2E a local o render.')}
+${chalk.bold.green('- ... test:e2e:change')} ${chalk.gray('(local || render)')} ${chalk.bold.green(':')} ${chalk.blue('Cambia el entorno de los test E2E a local o render.')}
+${chalk.bold.green('- ... coverage:')} ${chalk.blue('Genera un reporte de cobertura de test.')}
 ${chalk.magenta('Docker:\n')}${chalk.red('npm run...')}
 ${chalk.bold.green('- ... docker:build:')} ${chalk.blue('Crear una imagen Docker.')}
 ${chalk.bold.green('- ... docker:run:')} ${chalk.blue('Corre el contenedor Docker.')}
@@ -26,8 +27,4 @@ ${chalk.bold.green('- ... open:')} ${chalk.blue('Abrir todas las aplicaciones.')
 ${chalk.bold.green('- ... open:jenkins:')} ${chalk.blue('Portear Jenkins local a Ngrok y abrirlo en el navegador.')}
 ${chalk.magenta('Github:\n')}${chalk.red('npm run...')}
 ${chalk.bold.green('- ... commit:')} ${chalk.blue('Realizar un commit interactivo.')}
-${chalk.bold.green('- ... push:')} ${chalk.blue('Realizar un push y verificar los archivos pusheados.')}
-
-
-
-`);
+${chalk.bold.green('- ... push:')} ${chalk.blue('Realizar un push y verificar los archivos pusheados.')}`);

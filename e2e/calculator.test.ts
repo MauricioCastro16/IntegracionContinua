@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 test('La calculadora carga correctamente', async ({ page }) => {
-	await page.goto('/');
+	await page.goto('/', { waitUntil: 'networkidle' });
 	const currentUrl = page.url(); // Obtiene la URL actual de la página
 	console.log(`La URL actual es: ${currentUrl}`);
 	const buttons = await page.$$('.buttons button');
@@ -13,7 +13,7 @@ test('La calculadora carga correctamente', async ({ page }) => {
 });
 
 test('Suma de 2 + 3 debe dar 5', async ({ page }) => {
-	await page.goto('/');
+	await page.goto('/', { waitUntil: 'networkidle' });
 	await page.waitForURL('/');
 	await page.$$('.buttons button');
 	await page.$$('.display');
@@ -33,7 +33,7 @@ test('Suma de 2 + 3 debe dar 5', async ({ page }) => {
 });
 
 test('Resta de 6 - 3 debe dar 3', async ({ page }) => {
-	await page.goto('/');
+	await page.goto('/', { waitUntil: 'networkidle' });
 	await page.waitForURL('/');
 	await page.$$('.buttons button');
 	await page.$$('.display');
@@ -53,7 +53,7 @@ test('Resta de 6 - 3 debe dar 3', async ({ page }) => {
 });
 
 test('Multiplicación de 3 * 2 debe dar 6', async ({ page }) => {
-	await page.goto('/');
+	await page.goto('/', { waitUntil: 'networkidle' });
 	await page.waitForURL('/');
 	await page.$$('.buttons button');
 	await page.$$('.display');
@@ -73,7 +73,7 @@ test('Multiplicación de 3 * 2 debe dar 6', async ({ page }) => {
 });
 
 test('División de 9 / 3 debe dar 3', async ({ page }) => {
-	await page.goto('/');
+	await page.goto('/', { waitUntil: 'networkidle' });
 	await page.waitForURL('/');
 	await page.$$('.buttons button');
 	await page.$$('.display');
@@ -93,7 +93,7 @@ test('División de 9 / 3 debe dar 3', async ({ page }) => {
 });
 
 test('La función RootN debe calcular la raíz correctamente', async ({ page }) => {
-	await page.goto('/');
+	await page.goto('/', { waitUntil: 'networkidle' });
 	await page.waitForURL('/');
 	await page.$$('.special-functions button');
 	await page.$$('.display');
@@ -114,8 +114,28 @@ test('La función RootN debe calcular la raíz correctamente', async ({ page }) 
 	expect(resultText).toBe('=2.8284'); // Aproximadamente 2.8284
 });
 
+test('La función Fibonacci debe calcular el número correctamente', async ({ page }) => {
+	await page.goto('/', { waitUntil: 'networkidle' });
+	await page.waitForURL('/');
+	await page.$$('.special-functions button');
+	await page.$$('.display');
+	await page.waitForSelector('button:text("C")', { state: 'visible' });
+	await page.click('button:text("C")');
+
+	await page.waitForSelector('button:text("Fibo")', { state: 'visible' });
+	await page.click('button:text("Fibo")');
+	const inputText = await page.innerText('.display .input');
+	expect(inputText).toBe('Fibo(');
+
+	await page.click('button:text("5")');
+	await page.click('button:text(")")');
+	await page.click('button:text("=")');
+	const resultText = await page.innerText('.display .result');
+	expect(resultText).toBe('=3'); // El 5to número de Fibonacci es 3
+});
+
 test('El botón C borra la entrada', async ({ page }) => {
-	await page.goto('/');
+	await page.goto('/', { waitUntil: 'networkidle' });
 	await page.waitForURL('/');
 	await page.$$('.buttons button');
 	await page.$$('.display');
@@ -135,7 +155,7 @@ test('El botón C borra la entrada', async ({ page }) => {
 });
 
 test('Operaciones con decimales', async ({ page }) => {
-	await page.goto('/');
+	await page.goto('/', { waitUntil: 'networkidle' });
 	await page.waitForURL('/');
 	await page.$$('.buttons button');
 	await page.$$('.display');
