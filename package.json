@@ -13,8 +13,8 @@
 		"format": "prettier --write .",
 		"lint": "prettier --check . && eslint .",
 		"test:unit": "vitest",
-		"test": "npm run test:unit -- --run && npm run test:e2e",
 		"test:e2e": "npx playwright test",
+		"test": "npm run test:unit -- --run && npm run test:e2e",
 		"cambiarEntornoE2E": "node scripts/test-e2e.js",
 		"docker:build": "docker build -t sveltekit-app:latest .",
 		"docker:run": "docker run -p 3000:3000 --name sveltekit-app-container sveltekit-app:latest",
@@ -33,7 +33,8 @@
 		"commit": "node scripts\\interactive-commit.js",
 		"push": "node scripts\\push.js",
 		"explain:unit": "node scripts\\explain-test-errors.js",
-		"epic-final": "open-cli \"https://youtu.be/8sgycukafqQ?si=4lc1Y5Y-1JrUrct1^&t=66\""
+		"epic-final": "open-cli \"https://youtu.be/8sgycukafqQ?si=4lc1Y5Y-1JrUrct1^&t=66\"",
+		"help": "node scripts\\help.js"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.5",
