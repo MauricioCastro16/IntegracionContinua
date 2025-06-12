@@ -12,7 +12,7 @@ const explainErrors = async () => {
 	const prompt = `
 Genera un mensaje, tenés ESTRICTAMENTE PROHIBIDO el uso de ASTERISCOS y NEGRITAS, pero usá emojis y cuando uses comillas, usá estás: ", 
 que sea breve para Slack A continuación te paso un resumen del análisis de complejidad ciclomática y mantenibilidad de código en un proyecto 
-SvelteKit.
+SvelteKit. Cabe aclarar que aquellos archivos que tienen una complejidad "-1" o "0" son aquellos que no tienen funciones, por lo que no se les puede calcular la complejidad ciclomática.
 Quiero que me des:
 Un resumen general del estado del código.
 Qué archivos o funciones deberían revisarse primero.

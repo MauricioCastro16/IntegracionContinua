@@ -115,7 +115,7 @@ pipeline {
             channel: '#feedback', 
             message:
               "🧩✅ *Analisis de la compejidad realizado* \n" +
-              "🤖 *Explicación de la IA:* 🤖\n```\n${explanation.take(1000)}\n```\n"
+              "🤖 *Explicación de la IA:* 🤖\n```\n${explanation.take(2000)}\n```\n"
           )
         }
       }
