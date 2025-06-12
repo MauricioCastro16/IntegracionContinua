@@ -47,20 +47,50 @@ pipeline {
                 ? readFile('unit-test-explained.txt').trim()
                 : 'No se pudo generar una explicación del error.'
             // Enviar notificación a Slack.
-            slackSend(channel: '#feedback', message:
-              "🧪❌ *Test unitarios fallidos* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`\n" +
-              "🤖 *Explicación de la IA:*\n```\n${explanation.take(1000)}\n```\n" +
-              "🔗 ${env.BUILD_URL}"
+            slackSend(
+              channel: '#feedback', 
+              message:
+                "🧪❌ *Test unitarios fallidos* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`\n" +
+                "🤖 *Explicación de la IA:*\n```\n${explanation.take(1000)}\n```\n" +
+                "🔗 ${env.BUILD_URL}"
             )
             
             error("Tests unitarios fallaron")
           } else {
             // Enviar notificación a Slack si los tests pasaron.
             slackSend(
-              channel: 'feedback', 
+              channel: '#feedback', 
               message: "🧪✅ *Tests Unitarios pasados exitosamente* "
             )
           }
+        }
+      }
+    }
+
+    stage('Test de Cobertura') {
+      steps {
+        script {
+          // Redirigir la salida a un archivo
+          def result = bat(script: 'npm run coverage > coverage-test-result.txt', returnStatus: true)
+
+          // Usamos el token de OpenRouter para pedir la explicación de los errores.
+          withCredentials([string(credentialsId: 'openrouter-api-key', variable: 'OPENROUTER_API_KEY')]) {
+            bat 'npm run explain:coverage'
+          }
+          // Archivar el archivo que contiene la explicación de la IA.
+          archiveArtifacts artifacts: 'coverage-test-explained.txt', fingerprint: true
+
+          // Leer el archivo con la explicación generada por la IA.
+          def explanation = fileExists('coverage-test-explained.txt')
+              ? readFile('coverage-test-explained.txt').trim()
+              : 'No se pudo generar una explicación del test de cobertura.'
+          // Enviar notificación a Slack.
+          slackSend(
+            channel: '#feedback', 
+            message:
+              "📟 *Test de cobertura realizado:`\n" +
+              "🤖 *Explicación de la IA:*\n```\n${explanation.take(1000)}\n```\n"
+          )
         }
       }
     }
