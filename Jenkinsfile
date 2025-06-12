@@ -126,8 +126,10 @@ pipeline {
                 // Usamos la credencial desde el almacén de credenciales de Jenkins
                 withCredentials([string(credentialsId: 'render-api-token', variable: 'RENDER_API_KEY')]) {
                     // Usamos la variable $RENDER_API_KEY en el bat
+                    // Pasar la API Key de forma segura como variable de entorno en el script bat
                     def result = bat(script: """
-                        curl -s -o deploy-log.txt -w "%%{http_code}" -X POST "https://api.render.com/deploy/srv-d0v310a4d50c73e49s10?key=${env.RENDER_API_KEY}" > code.txt
+                        set RENDER_API_KEY=${env.RENDER_API_KEY}
+                        curl -s -o deploy-log.txt -w "%%{http_code}" -X POST "https://api.render.com/deploy/srv-d0v310a4d50c73e49s10?key=%RENDER_API_KEY%" > code.txt
                         set /p CODE=<code.txt
                     """, returnStatus: true)
 
