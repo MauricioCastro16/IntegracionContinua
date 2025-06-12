@@ -10,7 +10,7 @@ const explainErrors = async () => {
 	const testOutput = fs.readFileSync('coverage-test-result.txt', 'utf-8');
 
 	const prompt = `
-Genera un mensaje, tenés estrictamente prohibido el uso de * y negritas pero con emojis y cuando uses comillas, usá estás: ", que sea breve para Slack sobre el estado de la cobertura de pruebas del proyecto, basándote en la siguiente tabla de cobertura. El mensaje debe ser claro, conciso, y resaltar las áreas clave, incluyendo los archivos que tienen baja cobertura y las áreas que están bien cubiertas. Aquí está la tabla de cobertura:
+Genera un mensaje, tenés ESTRICTAMENTE PROHIBIDO el uso de ASTERISCOS y NEGRITAS, pero usá emojis y cuando uses comillas, usá estás: ", que sea breve para Slack sobre el estado de la cobertura de pruebas del proyecto, basándote en la siguiente tabla de cobertura. El mensaje debe ser claro, conciso, y resaltar las áreas clave, incluyendo los archivos que tienen baja cobertura y las áreas que están bien cubiertas. Aquí está la tabla de cobertura:
 
 \`\`\`
 ${testOutput.slice(0, 4000)}

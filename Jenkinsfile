@@ -94,6 +94,26 @@ pipeline {
       }
     }
 
+    stage('Analizar la complejidad del código') {
+      steps {
+        script {
+          // Redirigir la salida a un archivo
+          def result = bat(script: 'npm run complejidad > complexity-results.txt', returnStatus: true)
+
+          def explanation = fileExists('complexity-results.txt')
+              ? readFile('complexity-results.txt').trim()
+              : 'No se pudo generar un análisis de la complejidad.'
+
+          slackSend(
+            channel: '#feedback', 
+            message:
+              "📟✅ *Analisis de la compejidad* \n" +
+              "```\n${explanation.take(1000)}\n```\n"
+          )
+        }
+      }
+    }
+
     stage('Build') {
       steps {
           script {

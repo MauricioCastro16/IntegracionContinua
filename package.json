@@ -36,7 +36,8 @@
 		"explain:unit": "node scripts\\explain-test-errors.js",
 		"explain:coverage": "node scripts\\explain-coverage-test.js",
 		"epic-final": "open-cli \"https://youtu.be/8sgycukafqQ?si=4lc1Y5Y-1JrUrct1^&t=66\"",
-		"help": "node scripts\\help.js"
+		"help": "node scripts\\help.js",
+		"complejidad": "node scripts\\complejidad.js"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.5",
@@ -64,6 +65,7 @@
 		"svelte": "^5.0.0",
 		"svelte-check": "^4.0.0",
 		"tailwindcss": "^4.0.0",
+		"ts-complex": "^1.0.0",
 		"typescript": "^5.0.0",
 		"typescript-eslint": "^8.20.0",
 		"vite": "^6.2.6",

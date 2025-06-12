@@ -10,7 +10,7 @@ const explainErrors = async () => {
 	const testOutput = fs.readFileSync('unit-test-result.txt', 'utf-8');
 
 	const prompt = `
-El siguiente es un resultado de test automatizado. Resumí en español qué falló y por qué, en lenguaje claro y entendible para alguien que no es técnico y de forma muy resumida:
+El siguiente es un resultado de test automatizado. Resumí en español qué falló y por qué, en lenguaje claro y entendible para alguien que no es técnico y de forma muy resumida, y cuando uses comillas, usá estas ":
 
 \`\`\`
 ${testOutput.slice(0, 4000)}

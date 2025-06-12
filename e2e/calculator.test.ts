@@ -134,6 +134,26 @@ test('La función Fibonacci debe calcular el número correctamente', async ({ pa
 	expect(resultText).toBe('=3'); // El 5to número de Fibonacci es 3
 });
 
+test('El botón NextPrime calcula el siguiente primo', async ({ page }) => {
+	await page.goto('/', { waitUntil: 'networkidle' });
+	await page.waitForURL('/');
+	await page.$$('.special-functions button');
+	await page.$$('.display');
+	await page.waitForSelector('button:text("C")', { state: 'visible' });
+	await page.click('button:text("C")');
+
+	await page.waitForSelector('button:text("NextPrime")', { state: 'visible' });
+	await page.click('button:text("NextPrime")');
+	const inputText = await page.innerText('.display .input');
+	expect(inputText).toBe('NextPrime(');
+	
+	await page.click('button:text("9")');
+	await page.click('button:text(")")');
+	await page.click('button:text("=")');
+	const resultText = await page.innerText('.display .result');
+	expect(resultText).toBe('=11'); // El siguiente primo después de 9 es 11
+});
+
 test('El botón C borra la entrada', async ({ page }) => {
 	await page.goto('/', { waitUntil: 'networkidle' });
 	await page.waitForURL('/');
