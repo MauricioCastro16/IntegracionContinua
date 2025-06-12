@@ -88,7 +88,6 @@ pipeline {
           slackSend(
             channel: '#feedback', 
             message:
-            "🧪✅ *Tests Unitarios pasados exitosamente* "
               "📟 *Test de cobertura realizado* \n" +
               "🤖 *Explicación de la IA:*\n```\n${explanation.take(1000)}\n```\n"
           )
