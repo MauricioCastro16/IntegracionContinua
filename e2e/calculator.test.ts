@@ -146,7 +146,7 @@ test('El botón NextPrime calcula el siguiente primo', async ({ page }) => {
 	await page.click('button:text("NextPrime")');
 	const inputText = await page.innerText('.display .input');
 	expect(inputText).toBe('NextPrime(');
-	
+
 	await page.click('button:text("9")');
 	await page.click('button:text(")")');
 	await page.click('button:text("=")');

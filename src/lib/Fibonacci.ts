@@ -9,7 +9,9 @@
  */
 
 export function Fibonacci(n: number): number {
-	if (n <= 0) {throw new Error('El índice debe ser un número entero positivo.');}
+	if (n <= 0) {
+		throw new Error('El índice debe ser un número entero positivo.');
+	}
 	if (n === 1) return 0; // Primer número de Fibonacci
 	if (n === 2) return 1; // Segundo número de Fibonacci
 
