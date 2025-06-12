@@ -7,7 +7,7 @@ const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 const MODEL = 'deepseek/deepseek-chat:free';
 
 const explainErrors = async () => {
-	const testOutput = fs.readFileSync('unit-test-result.txt', 'utf-8');
+	const testOutput = fs.readFileSync('coverage-test-result.txt', 'utf-8');
 
 	const prompt = `
 Genera un mensaje breve para Slack sobre el estado de la cobertura de pruebas del proyecto, basándote en la siguiente tabla de cobertura. El mensaje debe ser claro, conciso, y resaltar las áreas clave, incluyendo los archivos que tienen baja cobertura y las áreas que están bien cubiertas. Aquí está la tabla de cobertura:
@@ -34,7 +34,7 @@ ${testOutput.slice(0, 4000)}
 
 		const result = response.data.choices[0].message.content;
 		console.log('🧠 Explicación de la cobertura:\n', result);
-		fs.writeFileSync('unit-test-explained.txt', result);
+		fs.writeFileSync('coverage-test-result.txt', result);
 	} catch (err) {
 		console.error('❌ Error al consultar la IA:', err.response?.data || err.message);
 	}

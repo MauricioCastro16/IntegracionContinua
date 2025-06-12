@@ -14,7 +14,7 @@ export default defineConfig({
 			reporter: ['text', 'json', 'html'], // Reportes en consola, JSON, HTML
 			all: true, // Incluye todos los archivos en la cobertura
 			include: ['src/**/*.ts', 'src/**/*.svelte'], // Solo incluye archivos .ts y .svelte en la cobertura
-			exclude: ['node_modules', 'src/**/*.test.ts'], // Excluye los archivos de test y node_modules
+			exclude: ['node_modules', 'src/**/*.test.ts'] // Excluye los archivos de test y node_modules
 		},
 		projects: [
 			{
