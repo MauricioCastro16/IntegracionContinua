@@ -34,7 +34,7 @@ ${testOutput.slice(0, 4000)}
 
 		const result = response.data.choices[0].message.content;
 		console.log('🧠 Explicación de la cobertura:\n', result);
-		fs.writeFileSync('coverage-test-result.txt', result);
+		fs.writeFileSync('coverage-test-explained.txt', result);
 	} catch (err) {
 		console.error('❌ Error al consultar la IA:', err.response?.data || err.message);
 	}
