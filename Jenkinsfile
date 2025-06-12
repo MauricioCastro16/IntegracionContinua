@@ -51,7 +51,7 @@ pipeline {
               channel: '#feedback', 
               message:
                 "🧪❌ *Test unitarios fallidos*" +
-                "🤖 *Explicación de la IA:*\n```\n${explanation.take(1000)}\n```\n" +
+                "🤖 *Explicación de la IA:*\n```\n${explanation.take(1000)}\n```\n"
             )
             
             error("Tests unitarios fallaron")
