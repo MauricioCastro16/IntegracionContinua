@@ -107,7 +107,7 @@ pipeline {
           slackSend(
             channel: '#feedback', 
             message:
-              "📟✅ *Analisis de la compejidad* \n" +
+              "🧩✅ *Analisis de la compejidad realizado* \n" +
               "```\n${explanation.take(1000)}\n```\n"
           )
         }
