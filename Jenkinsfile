@@ -50,9 +50,8 @@ pipeline {
             slackSend(
               channel: '#feedback', 
               message:
-                "🧪❌ *Test unitarios fallidos* en `${env.JOB_NAME} #${env.BUILD_NUMBER}`\n" +
+                "🧪❌ *Test unitarios fallidos*" +
                 "🤖 *Explicación de la IA:*\n```\n${explanation.take(1000)}\n```\n" +
-                "🔗 ${env.BUILD_URL}"
             )
             
             error("Tests unitarios fallaron")
