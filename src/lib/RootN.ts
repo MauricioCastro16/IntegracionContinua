@@ -9,7 +9,7 @@
  * RootN(27, 3); // Devuelve 3
  */
 export function RootN(n: number, m: number): number {
-	//if (n <= 0 || m <= 0) throw new Error('Ambos parámetros deben ser números positivos');
+	if (n <= 0 || m <= 0) throw new Error('Ambos parámetros deben ser números positivos');
 	if (m === 1) return n; // La raíz de un número con m=1 es el mismo número
 	const result = Math.pow(n, 1 / m);
 	return result;
